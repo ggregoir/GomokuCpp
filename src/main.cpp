@@ -130,8 +130,9 @@ int main(int argc, char** argv)
 				draw_white_circle(screen, mouse_x , mouse_y , 1000/50);
 				SDL_UpdateWindowSurface( window );
 			}
-			if (event.type == SDL_QUIT || event.key.keysym.sym  == SDLK_ESCAPE) 
+			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym  == SDLK_ESCAPE)) 
 			{
+				printf("%u\n", event.key.keysym.sym);
 				is_running = false;
 			}
 		}
