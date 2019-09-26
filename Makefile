@@ -16,10 +16,13 @@ all:
 clean:
 	if [ -d $(BUILD_FOLDER) ];then \
 		make -C build clean; \
-		rm $(NAME); \
+		rm -rf $(NAME); \
 	fi
 
-fclean: clean
+fclean:
 	rm -rf build
+	rm -rf $(NAME)
+
+re: fclean all
 
 .SILENT:
