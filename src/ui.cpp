@@ -1,4 +1,3 @@
-
 #include <SDL.h>
 
 //screen dimension constants
@@ -151,9 +150,4 @@ void	init_ui()
 	printf("Quitting...\n");
 
 	exit(0);
-}
-
-int main(int argc, char** argv) 
-{
-	init_ui();
 }
