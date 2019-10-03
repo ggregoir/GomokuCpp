@@ -4,5 +4,6 @@
 
 int main(int argc, char** argv) 
 {
-	grid.loop();
+	sdl_ui visu;
+	visu.render();
 }
