@@ -10,6 +10,7 @@ sdl_ui::sdl_ui(void)
 	}
 
 	this->window = SDL_CreateWindow( "Gomoku", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1200, 1200, SDL_WINDOW_SHOWN );
+	printf("La window est laaaa\n");
 	if( this->window == NULL )
 	{
 		printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
