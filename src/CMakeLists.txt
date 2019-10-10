@@ -13,7 +13,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED >=2.0.0)
 
-set(PROJECT_SRCS main.cpp ui.cpp)
+set(PROJECT_SRCS
+	main.cpp
+	Menu.cpp
+	Parameters.cpp
+	ui.cpp
+)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SRCS})
 
