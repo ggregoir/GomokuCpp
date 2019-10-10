@@ -10,7 +10,7 @@ public:
 	sdl_ui(void);
 	virtual ~sdl_ui(void);
 
-	void place_stone(uint8_t x, uint8_t y, uint8_t color);
+	void place_stone(uint8_t color, int x, int y);
 	void render();
 	void clear();
 

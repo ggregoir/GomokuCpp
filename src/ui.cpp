@@ -18,7 +18,7 @@ sdl_ui::sdl_ui(void)
 	}
 	this->myrenderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
     SDL_Surface *board = IMG_Load("img/board.png");
-    SDL_Surface *black = IMG_Load("img/black.png");
+    SDL_Surface *black = IMG_Load("img/black2.png");
     SDL_Surface *white = IMG_Load("img/white.png");
     SDL_Surface *help = IMG_Load("img/help.png");
 	if (board == 0 || black == 0 || white == 0 || help == 0)
@@ -36,6 +36,26 @@ sdl_ui::sdl_ui(void)
 		this->help_text = SDL_CreateTextureFromSurface(this->myrenderer, help);
 
 	SDL_RenderCopy(this->myrenderer, this->board_text, NULL, NULL);
+}
+
+void sdl_ui::place_stone(uint8_t color, int x, int y)
+{
+	SDL_Rect pos;
+
+	pos.x = x - 20;
+	pos.y = y - 20;
+	pos.w = 40;
+  	pos.h = 40;
+	switch(color) 
+	{
+    	case 1 : SDL_RenderCopy(this->myrenderer, this->black_text, NULL, &pos);
+             break;
+    	case 2 : SDL_RenderCopy(this->myrenderer, this->white_text, NULL, &pos);
+             break;
+        case 3 : SDL_RenderCopy(this->myrenderer, this->help_text, NULL, &pos);
+             break;
+		default : break;
+	}
 }
 
 void sdl_ui::clear()
