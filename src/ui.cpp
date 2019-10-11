@@ -36,14 +36,17 @@ sdl_ui::sdl_ui(void)
 		this->help_text = SDL_CreateTextureFromSurface(this->myrenderer, help);
 
 	SDL_RenderCopy(this->myrenderer, this->board_text, NULL, NULL);
+
 }
 
 void sdl_ui::place_stone(uint8_t color, int x, int y)
 {
 	SDL_Rect pos;
+	static int index_x[] = {116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083};
+	static int index_y[] = {104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118};
 
-	pos.x = x - 20;
-	pos.y = y - 20;
+	pos.x = index_x[x] - 20;
+	pos.y = index_y[y] - 20;
 	pos.w = 40;
   	pos.h = 40;
 	switch(color) 
