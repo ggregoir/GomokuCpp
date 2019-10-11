@@ -15,8 +15,6 @@ public:
 	void clear();
 
 private:
-	
-	int index[19];
 
 	SDL_Window* window;
 	SDL_Renderer* myrenderer;
