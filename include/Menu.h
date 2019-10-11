@@ -11,6 +11,8 @@ class Menu
 	{
 		std::string		name;
 		int				choice[5];
+		int				nb_choices;
+		int				parent;
 		void			(*set)(Parameters *params);
 	};
 
@@ -23,8 +25,12 @@ class Menu
 		Menu(void);
 		~Menu(void);
 
+		int		getInput(int max_index);
+
 		// Display
+		void	loop(Parameters *params);
 		void	displayMenu(int index);
+		void	clear();
 
 		// Debug
 		void	debugTree();
