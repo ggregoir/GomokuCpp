@@ -2,8 +2,8 @@
 
 enum Theme
 {
-	Dark,
-	Light
+	Classic,
+	Dark
 };
 
 enum Mode

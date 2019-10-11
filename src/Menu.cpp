@@ -11,33 +11,27 @@ namespace color
 	string reset = "\033[0m";
 }
 
-Menu::Menu(void) : tree{
-		{
-			"Welcome to gomoku !",
-			{1, 2, -1, -1, -1},
-			2,
-			0,
-			nullptr
-		},
-		{
-			"Play",
-			{-1, -1, -1, -1, -1},
-			0,
-			0,
-			nullptr
-		},
-		{
-			"Parameters",
-			{-1, -1, -1, -1, -1},
-			0,
-			0,
-			nullptr
-		}
-	}
-{}
+Menu::Menu(void) : tree
+{
+	{ "Welcome to gomoku !", {1, 5, -1, -1}, 2, 0, nullptr },
+		{ "Play", {2, 3, 4, -1}, 3, 0, nullptr },
+			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 0, nullptr },
+			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 0, nullptr },
+			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 0, nullptr },
+		{ "Parameters", {6, 9, 12, -1}, 3, 0, nullptr },
+			{ "Theme", {7, 8, -1, -1}, 2, 5, nullptr },
+				{ "Classic", {-1, -1, -1, -1}, 0, 6, nullptr },
+				{ "Dark", {-1, -1, -1, -1}, 0, 6, nullptr },
+			{ "Rule", {10, 11, -1, -1}, 2, 5, nullptr },
+				{ "Standard", {-1, -1, -1, -1}, 0, 9, nullptr },
+				{ "Restricted", {-1, -1, -1, -1}, 0, 9, nullptr },
+			{ "First to play", {13, 14, -1, -1}, 2, 5, nullptr },
+				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 12, nullptr },
+				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 12, nullptr },
+
+} {}
 
 Menu::~Menu(void) {}
-
 
 int		Menu::getInput(int max_index)
 {
@@ -51,6 +45,8 @@ int		Menu::getInput(int max_index)
 
 		// This code converts from string to number safely.
 		stringstream myStream(input);
+		if (input == "quit")
+			exit(EXIT_SUCCESS);
 		if (myStream >> choice_index)
 		{
 			if (choice_index > 0 && choice_index <= max_index)
@@ -61,17 +57,15 @@ int		Menu::getInput(int max_index)
 	return choice_index;
 }
 
-// Display
-
 void	Menu::displayMenu(int index)
 {
 	int	choice_index;
 	int	i = 0;
 
-	if (index >= 3 || index < 0)
+	if (index >= 15 || index < 0)
 	{
 		cout << "index error in displayMenu" << endl;
-		return ;
+		exit(EXIT_FAILURE);
 	}
 	cout << this->tree[index].name << endl;
 	while (i < this->tree[index].nb_choices)
@@ -88,8 +82,8 @@ void	Menu::displayMenu(int index)
 
 void	Menu::loop(Parameters *params)
 {
-	uint8_t	input = 0;
-	uint8_t	index = 0;
+	int		input = 0;
+	int		index = 0;
 	bool	quit = false;
 
 	while (!quit)
@@ -97,37 +91,23 @@ void	Menu::loop(Parameters *params)
 		this->clear();
 		this->displayMenu(index);
 		input = this->getInput(this->tree[index].nb_choices + 1);
-		if (input == this->tree[index].nb_choices)
+		if (input == this->tree[index].nb_choices + 1)
 		{
 			if (index == 0)
 				quit = true;
 			else
 				index = this->tree[index].parent;
 		}
-		index = this->tree[index].choice[input - 1];
+		else
+		{
+			cout << "input: " << input << endl;
+			index = this->tree[index].choice[input - 1];
+		}
 	}
 
 }
 
 void	Menu::clear()
 {
-	cout << "\033[2J";
-}
-
-// Debug
-
-void	Menu::debugTree()
-{
-	for (int i = 0; i < 3; i++)
-	{
-    	cout << "Name: " << this->tree[i].name << endl;
-		cout << "Choices: ";
-		for (const auto& elem : this->tree[i].choice)
-		{
-			cout << elem << " ";
-		}
-		cout << endl;
-		cout << "Set pointer: " << this->tree[i].set << endl;
-		cout << endl;
-	}
+	cout << "\e[1;1H\e[2J";
 }

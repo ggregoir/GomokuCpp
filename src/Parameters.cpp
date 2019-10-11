@@ -5,7 +5,7 @@ Parameters::Parameters()
 {
 	this->mode = PlayerVsPlayer;
 	this->rule = Standard;
-	this->theme = Light;
+	this->theme = Classic;
 }
 
 Parameters::~Parameters() {}
