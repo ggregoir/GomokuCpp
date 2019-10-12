@@ -13,47 +13,47 @@ Parameters::~Parameters() {}
 
 // Setters
 
-void	Parameters::setTheme(Theme theme)
+void	Parameters::setTheme(Parameters &params, uint8_t theme)
 {
-	this->theme = theme;
+	params.theme = static_cast<Theme>(theme);
 }
 
-void	Parameters::setRule(Rule rule)
+void	Parameters::setRule(Parameters &params, uint8_t rule)
 {
-	this->rule = rule;
+	params.rule = static_cast<Rule>(rule);
 }
 
-void	Parameters::setMode(Mode mode)
+void	Parameters::setMode(Parameters &params, uint8_t mode)
 {
-	this->mode = mode;
+	params.mode = static_cast<Mode>(mode);
 }
 
-void	Parameters::setPriority(bool priority)
+void	Parameters::setPriority(Parameters &params, uint8_t priority)
 {
-	this->priority = priority;
+	params.priority = (bool)priority;
 }
 
 
 // Getters
 
-Theme	Parameters::getTheme()
+uint8_t	Parameters::getTheme(Parameters &params)
 {
-	return this->theme;
+	return params.theme;
 }
 
-Rule	Parameters::getRule()
+uint8_t	Parameters::getRule(Parameters &params)
 {
-	return this->rule;
+	return params.rule;
 }
 
-Mode	Parameters::getMode()
+uint8_t	Parameters::getMode(Parameters &params)
 {
-	return this->mode;
+	return params.mode;
 }
 
-bool	Parameters::getPriority()
+uint8_t	Parameters::getPriority(Parameters &params)
 {
-	return this->priority;
+	return params.priority;
 }
 
 

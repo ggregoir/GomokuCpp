@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "Parameters.h"
 #include <iostream>
 #include <sstream>
 
@@ -13,21 +14,22 @@ namespace color
 
 Menu::Menu(void) : tree
 {
-	{ "Welcome to gomoku !", {1, 5, -1, -1}, 2, 0, nullptr },
-		{ "Play", {2, 3, 4, -1}, 3, 0, nullptr },
-			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 0, nullptr },
-			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 0, nullptr },
-			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 0, nullptr },
-		{ "Parameters", {6, 9, 12, -1}, 3, 0, nullptr },
-			{ "Theme", {7, 8, -1, -1}, 2, 5, nullptr },
-				{ "Classic", {-1, -1, -1, -1}, 0, 6, nullptr },
-				{ "Dark", {-1, -1, -1, -1}, 0, 6, nullptr },
-			{ "Rule", {10, 11, -1, -1}, 2, 5, nullptr },
-				{ "Standard", {-1, -1, -1, -1}, 0, 9, nullptr },
-				{ "Restricted", {-1, -1, -1, -1}, 0, 9, nullptr },
-			{ "First to play", {13, 14, -1, -1}, 2, 5, nullptr },
-				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 12, nullptr },
-				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 12, nullptr },
+	{ "Welcome to gomoku !", {1, 6, -1, -1}, 2, 0 },
+		{ "Play", {2, 3, 4, 5}, 4, 0 },
+			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
+			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
+			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
+			{ "Start the game", {-1, -1, -1, -1}, 0, 1 },
+		{ "Parameters", {7, 10, 13, -1}, 3, 0 },
+			{ "Theme", {8, 9, -1, -1}, 2, 6 },
+				{ "Classic", {-1, -1, -1, -1}, 0, 7, Parameters::setTheme, Parameters::getTheme },
+				{ "Dark", {-1, -1, -1, -1}, 0, 7, Parameters::setTheme, Parameters::getTheme },
+			{ "Rule", {11, 12, -1, -1}, 2, 6 },
+				{ "Standard", {-1, -1, -1, -1}, 0, 10, Parameters::setRule, Parameters::getRule },
+				{ "Restricted", {-1, -1, -1, -1}, 0, 10, Parameters::setRule, Parameters::getRule },
+			{ "First to play", {14, 15, -1, -1}, 2, 6 },
+				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 13, Parameters::setPriority, Parameters::getPriority },
+				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 13, Parameters::setPriority, Parameters::getPriority },
 
 } {}
 
@@ -57,7 +59,7 @@ int		Menu::getInput(int max_index)
 	return choice_index;
 }
 
-void	Menu::displayMenu(int index)
+void	Menu::displayMenu(int index, Parameters &params)
 {
 	int	choice_index;
 	int	i = 0;
@@ -67,11 +69,14 @@ void	Menu::displayMenu(int index)
 		cout << "index error in displayMenu" << endl;
 		exit(EXIT_FAILURE);
 	}
-	cout << this->tree[index].name << endl;
-	while (i < this->tree[index].nb_choices)
+	cout << tree[index].name << endl;
+	while (i < tree[index].nb_choices)
 	{
-		choice_index = this->tree[index].choice[i];
-		cout << i + 1 << ") " << this->tree[choice_index].name << endl;
+		choice_index = tree[index].choice[i];
+		if (tree[choice_index].get && tree[choice_index].get(params) == i)
+			cout << i + 1 << ") " << color::green << tree[choice_index].name << color::reset << endl;
+		else
+			cout << i + 1 << ") " << tree[choice_index].name << endl;
 		i++;
 	}
 	if (index == 0)
@@ -80,29 +85,36 @@ void	Menu::displayMenu(int index)
 		cout << i + 1 << ") " << "Back" << endl;
 }
 
-void	Menu::loop(Parameters *params)
+void	Menu::loop(Parameters &params)
 {
 	int		input = 0;
 	int		index = 0;
+	int		choice_index = 0;
 	bool	quit = false;
 
 	while (!quit)
 	{
-		this->clear();
-		this->displayMenu(index);
-		input = this->getInput(this->tree[index].nb_choices + 1);
-		if (input == this->tree[index].nb_choices + 1)
+		clear();
+		displayMenu(index, params);
+		input = getInput(tree[index].nb_choices + 1);
+		if (input == tree[index].nb_choices + 1)
 		{
 			if (index == 0)
-				quit = true;
+				exit(EXIT_SUCCESS);
 			else
-				index = this->tree[index].parent;
+				index = tree[index].parent;
 		}
 		else
 		{
-			cout << "input: " << input << endl;
-			index = this->tree[index].choice[input - 1];
+			choice_index = tree[index].choice[input - 1];
+			if (choice_index == 5) // index for starting the game in play menu
+				quit = true;
+			else if (!tree[choice_index].get)
+				index = choice_index;
+			else
+				tree[choice_index].set(params, input - 1);
 		}
+		
 	}
 
 }

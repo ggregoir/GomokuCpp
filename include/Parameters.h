@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 enum Theme
 {
 	Classic,
@@ -32,18 +34,18 @@ class Parameters
 		~Parameters();
 
 		// Setters
-		void	setTheme(Theme theme);
-		void	setRule(Rule rule);
-		void	setMode(Mode mode);
-		void	setPriority(bool priority);
+		static void		setTheme(Parameters &params, uint8_t theme);
+		static void		setRule(Parameters &params, uint8_t rule);
+		static void		setMode(Parameters &params, uint8_t mode);
+		static void		setPriority(Parameters &params, uint8_t priority);
 
 		// Getters
-		Theme	getTheme();
-		Rule	getRule();
-		Mode	getMode();
-		bool	getPriority();
+		static uint8_t	getTheme(Parameters &params);
+		static uint8_t	getRule(Parameters &params);
+		static uint8_t	getMode(Parameters &params);
+		static uint8_t	getPriority(Parameters &params);
 
 		// Debug
-		void	debugState();
+		void		debugState();
 };
 

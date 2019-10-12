@@ -2,6 +2,7 @@
 
 #include <string>
 
+
 class Parameters;
 
 class Menu
@@ -13,21 +14,22 @@ class Menu
 		int				choice[4];
 		int				nb_choices;
 		int				parent;
-		void			(*set)(Parameters *params);
+		void			(*set)(Parameters &params, uint8_t to_set);
+		uint8_t			(*get)(Parameters &params);
 	};
 
 
 	private:
-		const SubMenu	tree[15];
+		const SubMenu	tree[16];
 		
 		int		getInput(int max_index);
-		void	displayMenu(int index);
+		void	displayMenu(int index, Parameters &params);
 		void	clear();
 
 	public:
 		Menu(void);
 		~Menu(void);
 
-		void	loop(Parameters *params);
+		void	loop(Parameters &params);
 
 };
