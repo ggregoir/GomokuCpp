@@ -21,22 +21,72 @@ sdl_ui::sdl_ui(void)
     SDL_Surface *black = IMG_Load("img/black2.png");
     SDL_Surface *white = IMG_Load("img/white.png");
     SDL_Surface *help = IMG_Load("img/help.png");
-	if (board == 0 || black == 0 || white == 0 || help == 0)
+    SDL_Surface *lastplayed = IMG_Load("img/lastplayed.png");
+	if (board == 0 || black == 0 || white == 0 || help == 0 || lastplayed == 0)
 		return;
 	SDL_SetColorKey(board, 0, SDL_MapRGB(board->format, 0, 0, 0));
-		this->board_text = SDL_CreateTextureFromSurface(this->myrenderer, board);
+	this->board_text = SDL_CreateTextureFromSurface(this->myrenderer, board);
 
 	SDL_SetColorKey(black, 0, SDL_MapRGB(black->format, 0, 0, 0));
-		this->black_text = SDL_CreateTextureFromSurface(this->myrenderer, black);
+	this->black_text = SDL_CreateTextureFromSurface(this->myrenderer, black);
 
 	SDL_SetColorKey(white, 0, SDL_MapRGB(white->format, 0, 0, 0));
-		this->white_text = SDL_CreateTextureFromSurface(this->myrenderer, white);
+	this->white_text = SDL_CreateTextureFromSurface(this->myrenderer, white);
 
 	SDL_SetColorKey(help, 0, SDL_MapRGB(help->format, 0, 0, 0));
-		this->help_text = SDL_CreateTextureFromSurface(this->myrenderer, help);
+	this->help_text = SDL_CreateTextureFromSurface(this->myrenderer, help);
+
+	SDL_SetColorKey(lastplayed, 0, SDL_MapRGB(lastplayed->format, 0, 0, 0));
+	this->lastplayed_text = SDL_CreateTextureFromSurface(this->myrenderer, lastplayed);
 
 	SDL_RenderCopy(this->myrenderer, this->board_text, NULL, NULL);
 
+}
+
+SDL_Rect sdl_ui::pixel_to_index(int mouse_x, int mouse_y)
+{
+	SDL_Rect pos; //temporaire trouver une alternative car c'est sale
+	int close_x;
+	int close_y;
+	int i = 0;
+	int closest_x = -2000;
+	int closest_y = -2000;
+	static int index_x[] = {116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083};
+	static int index_y[] = {104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118};
+
+
+	while(i != 19)
+	{
+		if (mouse_x - index_x[i] > closest_x)
+		{
+			closest_x = mouse_x - index_x[i];
+			close_x = i;
+		}
+		if (mouse_y - index_y[i] > closest_y)
+		{
+			closest_y = mouse_y - index_y[i];
+			close_y = i;
+		}
+		i++;
+	}
+	pos.x = close_x;
+	pos.y = close_y;
+	return(pos);
+}
+
+void sdl_ui::print_board(int tab[361])
+{
+	for (int i = 0; i < 361; ++i)
+	{
+		if (tab[i] == 1)
+		{
+			place_stone(1, i % 19, i / 19);
+		}
+		else if (tab[i] == 2)
+		{
+			place_stone(1, i % 19, i / 19);
+		}
+	}
 }
 
 void sdl_ui::place_stone(uint8_t color, int x, int y)
@@ -51,12 +101,14 @@ void sdl_ui::place_stone(uint8_t color, int x, int y)
   	pos.h = 40;
 	switch(color) 
 	{
-    	case 1 : SDL_RenderCopy(this->myrenderer, this->black_text, NULL, &pos);
-             break;
-    	case 2 : SDL_RenderCopy(this->myrenderer, this->white_text, NULL, &pos);
-             break;
-        case 3 : SDL_RenderCopy(this->myrenderer, this->help_text, NULL, &pos);
-             break;
+		case 1 : SDL_RenderCopy(this->myrenderer, this->black_text, NULL, &pos);
+			break;
+		case 2 : SDL_RenderCopy(this->myrenderer, this->white_text, NULL, &pos);
+			break;
+		case 3 : SDL_RenderCopy(this->myrenderer, this->help_text, NULL, &pos);
+			break;
+		case 4 : SDL_RenderCopy(this->myrenderer, this->lastplayed_text, NULL, &pos);
+			break;
 		default : break;
 	}
 }
