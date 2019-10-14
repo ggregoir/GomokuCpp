@@ -2,6 +2,7 @@
 #include "Parameters.h"
 #include <iostream>
 #include <sstream>
+#include <unistd.h>
 
 using namespace std;
 
@@ -14,22 +15,21 @@ namespace color
 
 Menu::Menu(void) : tree
 {
-	{ "Welcome to gomoku !", {1, 6, -1, -1}, 2, 0 },
-		{ "Play", {2, 3, 4, 5}, 4, 0 },
+	{ "Welcome to gomoku !", {1, 5, -1, -1}, 2, 0 },
+		{ "Play", {2, 3, 4, -1}, 3, 0 },
 			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
 			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
 			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
-			{ "Start the game", {-1, -1, -1, -1}, 0, 1 },
-		{ "Parameters", {7, 10, 13, -1}, 3, 0 },
-			{ "Theme", {8, 9, -1, -1}, 2, 6 },
-				{ "Classic", {-1, -1, -1, -1}, 0, 7, Parameters::setTheme, Parameters::getTheme },
-				{ "Dark", {-1, -1, -1, -1}, 0, 7, Parameters::setTheme, Parameters::getTheme },
-			{ "Rule", {11, 12, -1, -1}, 2, 6 },
-				{ "Standard", {-1, -1, -1, -1}, 0, 10, Parameters::setRule, Parameters::getRule },
-				{ "Restricted", {-1, -1, -1, -1}, 0, 10, Parameters::setRule, Parameters::getRule },
-			{ "First to play", {14, 15, -1, -1}, 2, 6 },
-				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 13, Parameters::setPriority, Parameters::getPriority },
-				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 13, Parameters::setPriority, Parameters::getPriority },
+		{ "Parameters", {6, 9, 12, -1}, 3, 0 },
+			{ "Theme", {7, 8, -1, -1}, 2, 6 },
+				{ "Classic", {-1, -1, -1, -1}, 0, 6, Parameters::setTheme, Parameters::getTheme },
+				{ "Dark", {-1, -1, -1, -1}, 0, 6, Parameters::setTheme, Parameters::getTheme },
+			{ "Rule", {10, 11, -1, -1}, 2, 5 },
+				{ "Standard", {-1, -1, -1, -1}, 0, 9, Parameters::setRule, Parameters::getRule },
+				{ "Restricted", {-1, -1, -1, -1}, 0, 9, Parameters::setRule, Parameters::getRule },
+			{ "First to play", {13, 14, -1, -1}, 2, 5 },
+				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 12, Parameters::setPriority, Parameters::getPriority },
+				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 12, Parameters::setPriority, Parameters::getPriority },
 
 } {}
 
@@ -57,6 +57,24 @@ int		Menu::getInput(int max_index)
 		cout << "Invalid index, please try again" << endl;
 	}
 	return choice_index;
+}
+
+void	Menu::clear()
+{
+	cout << "\e[1;1H\e[2J";
+}
+
+void	Menu::goodGame()
+{
+	string	msg = "Have a good game !";
+	auto	milliseconds = 100;
+
+	for (auto &elem : msg)
+	{
+		cout << elem << flush;
+		usleep(milliseconds * 1000);
+	}
+	cout << endl;
 }
 
 void	Menu::displayMenu(int index, Parameters &params)
@@ -107,8 +125,14 @@ void	Menu::loop(Parameters &params)
 		else
 		{
 			choice_index = tree[index].choice[input - 1];
-			if (choice_index == 5) // index for starting the game in play menu
+			if (choice_index >= 2 && choice_index <= 4 )
+			{
+				tree[choice_index].set(params, input - 1);
+				clear();
+				displayMenu(index, params);
+				goodGame();
 				quit = true;
+			}
 			else if (!tree[choice_index].get)
 				index = choice_index;
 			else
@@ -117,9 +141,4 @@ void	Menu::loop(Parameters &params)
 		
 	}
 
-}
-
-void	Menu::clear()
-{
-	cout << "\e[1;1H\e[2J";
 }
