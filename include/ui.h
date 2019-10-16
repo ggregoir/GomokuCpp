@@ -25,4 +25,8 @@ private:
 	SDL_Texture* help_text;
 	SDL_Texture* board_text;
 	SDL_Texture* lastplayed_text;
+
+	const int	index_x[19];
+	const int	index_y[19];
+
 };

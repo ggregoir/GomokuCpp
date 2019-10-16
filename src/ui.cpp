@@ -1,6 +1,13 @@
 #include "ui.h"
 
-sdl_ui::sdl_ui(void)
+sdl_ui::sdl_ui(void) : index_x
+{
+	116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083
+},
+index_y
+{
+	104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118
+}
 {
 
 	if((SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO)==-1)) 
@@ -49,20 +56,20 @@ SDL_Rect sdl_ui::pixel_to_index(int mouse_x, int mouse_y)
 	int close_x;
 	int close_y;
 	int i = 0;
-	int closest_x = -2000;
-	int closest_y = -2000;
-	static int index_x[] = {116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083};
-	static int index_y[] = {104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118};
+	int closest_x = 2000;
+	int closest_y = 2000;
+	// static int index_x[] = {116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083};
+	// static int index_y[] = {104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118};
 
 
 	while(i != 19)
 	{
-		if (mouse_x - index_x[i] > closest_x)
+		if (abs(mouse_x - index_x[i]) < abs(closest_x))
 		{
 			closest_x = mouse_x - index_x[i];
 			close_x = i;
 		}
-		if (mouse_y - index_y[i] > closest_y)
+		if (abs(mouse_y - index_y[i]) < abs(closest_y))
 		{
 			closest_y = mouse_y - index_y[i];
 			close_y = i;
@@ -74,7 +81,7 @@ SDL_Rect sdl_ui::pixel_to_index(int mouse_x, int mouse_y)
 	return(pos);
 }
 
-void sdl_ui::print_board(int tab[361])
+void sdl_ui::print_board(int tab[361], int lastpiece)
 {
 	for (int i = 0; i < 361; ++i)
 	{
@@ -84,16 +91,17 @@ void sdl_ui::print_board(int tab[361])
 		}
 		else if (tab[i] == 2)
 		{
-			place_stone(1, i % 19, i / 19);
+			place_stone(2, i % 19, i / 19);
 		}
 	}
+	place_stone(4, lastpiece % 19, lastpiece / 19);
 }
 
 void sdl_ui::place_stone(uint8_t color, int x, int y)
 {
 	SDL_Rect pos;
-	static int index_x[] = {116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083};
-	static int index_y[] = {104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118};
+	// static int index_x[] = {116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083};
+	// static int index_y[] = {104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118};
 
 	pos.x = index_x[x] - 20;
 	pos.y = index_y[y] - 20;
