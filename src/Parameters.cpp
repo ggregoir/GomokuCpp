@@ -1,4 +1,5 @@
 #include "Parameters.h"
+
 #include <iostream>
 
 Parameters::Parameters()

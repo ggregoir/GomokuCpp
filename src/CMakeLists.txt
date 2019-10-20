@@ -17,7 +17,7 @@ set(PROJECT_SRCS
 	main.cpp
 	Menu.cpp
 	Parameters.cpp
-	ui.cpp
+	UserInterface.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SRCS})

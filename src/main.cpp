@@ -1,5 +1,6 @@
+#include "UserInterface.h"
+
 #include <SDL.h>
-#include "ui.h"
 #include <iostream>
 
 int main(int argc, char** argv) 
