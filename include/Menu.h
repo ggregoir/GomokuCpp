@@ -18,19 +18,18 @@ class Menu
 		uint8_t			(*get)(Parameters &params);
 	};
 
-
-	private:
-		const SubMenu	tree[15];
-		
-		int		getInput(int max_index);
-		void	displayMenu(int index, Parameters &params);
-		void	clear();
-		void	goodGame();
-
 	public:
 		Menu(void);
 		~Menu(void);
 
-		void	loop(Parameters &params);
+		void			loop(Parameters &params);
+
+	private:
+		const SubMenu	tree[15];
+		
+		int				getInput(int max_index);
+		void			displayMenu(int index, Parameters &params);
+		void			clear();
+		void			goodGame();
 
 };

@@ -21,7 +21,7 @@ class GameManager
 		GameManager();
 		~GameManager();
 
-		std::array<uint8_t, 361>	board;
+		std::array<uint8_t, 361>					board;
 		std::vector<std::tuple<uint32_t, Stone>>	history;
 
 		bool		modify_board(uint32_t new_index, Stone color);

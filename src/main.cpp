@@ -5,11 +5,11 @@
 
 int main(int argc, char** argv) 
 {
-	sdl_ui visu;
-	SDL_Event event;
-	bool quit(false);
+	UserInterface	ui;
+	SDL_Event		event;
+	bool			quit = false;
 
-	visu.render();
+	ui.render();
 	try
 	{
 		while (!quit)

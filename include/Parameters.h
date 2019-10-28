@@ -23,11 +23,6 @@ enum Rule
 
 class Parameters
 {
-	private:
-		Theme	theme;
-		Mode	mode;
-		Rule	rule;
-		bool	priority; // true => player1 plays first
 
 	public:
 		Parameters();
@@ -46,6 +41,13 @@ class Parameters
 		static uint8_t	getPriority(Parameters &params);
 
 		// Debug
-		void		debugState();
+		void			debugState();
+
+	private:
+		Theme			theme;
+		Mode			mode;
+		Rule			rule;
+		bool			priority; // true => player1 plays first
+	
 };
 

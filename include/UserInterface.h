@@ -3,10 +3,15 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-struct Position
+#define BOARD_SIZE		19
+#define BOARD_CAPACITY	(BOARD_SIZE * BOARD_SIZE)
+
+class Position
 {
-	int	x;
-	int	y;
+
+public:
+	int	x, y;
+
 };
 
 class UserInterface
@@ -16,11 +21,11 @@ public:
 	UserInterface(void);
 	~UserInterface(void);
 
-	void		place_stone(uint8_t color, int x, int y);
-	SDL_Rect	pixel_to_index(int mouse_x, int mouse_y);
-	void		render();
-	void		print_board(uint8_t tab[361], uint32_t lastpiece);
-	void		clear();
+	SDL_Rect		pixel_to_index(Position mouse);
+	void			place_stone(uint8_t color, Position stone);
+	void			print_board(uint8_t tab[BOARD_CAPACITY], uint32_t lastpiece);
+	void			render();
+	void			clear();
 
 private:
 
@@ -32,7 +37,7 @@ private:
 	SDL_Texture*	board_text;
 	SDL_Texture*	last_played_text;
 
-	const int		index_x[19];
-	const int		index_y[19];
+	const int		board_x[BOARD_SIZE];
+	const int		board_y[BOARD_SIZE];
 
 };

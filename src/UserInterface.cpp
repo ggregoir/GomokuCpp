@@ -5,8 +5,8 @@
 using namespace std;
 
 UserInterface::UserInterface() :
-index_x { 116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083 },
-index_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118 }
+board_x { 116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083 },
+board_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118 }
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) 
 	{
@@ -28,7 +28,7 @@ index_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 
     SDL_Surface *help = IMG_Load("img/help.png");
     SDL_Surface *last_played = IMG_Load("img/last_played.png");
 
-	if (board == 0 || black == 0 || white == 0 || help == 0 || lastplayed == 0)
+	if (board == 0 || black == 0 || white == 0 || help == 0 || last_played == 0)
 		return;
 	SDL_SetColorKey(board, 0, SDL_MapRGB(board->format, 0, 0, 0));
 	board_text = SDL_CreateTextureFromSurface(renderer, board);
@@ -42,31 +42,42 @@ index_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 
 	SDL_SetColorKey(help, 0, SDL_MapRGB(help->format, 0, 0, 0));
 	help_text = SDL_CreateTextureFromSurface(renderer, help);
 
-	SDL_SetColorKey(lastplayed, 0, SDL_MapRGB(last_played->format, 0, 0, 0));
-	lastplayed_text = SDL_CreateTextureFromSurface(renderer, lastplayed);
+	SDL_SetColorKey(last_played, 0, SDL_MapRGB(last_played->format, 0, 0, 0));
+	last_played_text = SDL_CreateTextureFromSurface(renderer, last_played);
 
 	SDL_RenderCopy(renderer, board_text, NULL, NULL);
 
 }
 
-SDL_Rect UserInterface::pixel_to_index(int mouse_x, int mouse_y)
+UserInterface::~UserInterface()
 {
-	SDL_Rect pos; //temporaire trouver une alternative car c'est sale
+	SDL_DestroyTexture(black_text);
+	SDL_DestroyTexture(white_text);
+	SDL_DestroyTexture(board_text);
+	SDL_DestroyTexture(help_text);
+	SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+SDL_Rect	UserInterface::pixel_to_index(Position mouse)
+{
+	SDL_Rect pos;
 	int close_x;
 	int close_y;
 	int closest_x = 2000;
 	int closest_y = 2000;
 
-	for (int i = 0; i < 19; i++)
+	for (int i = 0; i < BOARD_SIZE; i++)
 	{
-		if (abs(mouse_x - index_x[i]) < abs(closest_x))
+		if (abs(mouse.x - board_x[i]) < abs(closest_x))
 		{
-			closest_x = mouse_x - index_x[i];
+			closest_x = mouse.x - board_x[i];
 			close_x = i;
 		}
-		if (abs(mouse_y - index_y[i]) < abs(closest_y))
+		if (abs(mouse.y - board_y[i]) < abs(closest_y))
 		{
-			closest_y = mouse_y - index_y[i];
+			closest_y = mouse.y - board_y[i];
 			close_y = i;
 		}
 	}
@@ -75,24 +86,24 @@ SDL_Rect UserInterface::pixel_to_index(int mouse_x, int mouse_y)
 	return (pos);
 }
 
-void UserInterface::print_board(int tab[361], int lastpiece)
+void		UserInterface::print_board(uint8_t tab[BOARD_CAPACITY], uint32_t last_piece)
 {
-	for (int i = 0; i < 361; ++i)
+	for (int i = 0; i < BOARD_CAPACITY; ++i)
 	{
 		if (tab[i] == 1)
-			place_stone(1, i % 19, i / 19);
+			place_stone(1, Position { i % BOARD_SIZE, i / BOARD_SIZE });
 		else if (tab[i] == 2)
-			place_stone(2, i % 19, i / 19);
+			place_stone(2, Position { i % BOARD_SIZE, i / BOARD_SIZE });
 	}
-	place_stone(4, lastpiece % 19, lastpiece / 19);
+	place_stone(4, Position { (int)last_piece % BOARD_SIZE, (int)last_piece / BOARD_SIZE });
 }
 
-void UserInterface::place_stone(uint8_t color, int x, int y)
+void		UserInterface::place_stone(uint8_t color, Position stone)
 {
 	SDL_Rect pos;
 
-	pos.x = index_x[x] - 20;
-	pos.y = index_y[y] - 20;
+	pos.x = board_x[stone.x] - 20;
+	pos.y = board_y[stone.y] - 20;
 	pos.w = 40;
   	pos.h = 40;
 
@@ -104,32 +115,20 @@ void UserInterface::place_stone(uint8_t color, int x, int y)
 			break;
 		case 3 : SDL_RenderCopy(renderer, help_text, NULL, &pos);
 			break;
-		case 4 : SDL_RenderCopy(renderer, lastplayed_text, NULL, &pos);
+		case 4 : SDL_RenderCopy(renderer, last_played_text, NULL, &pos);
 			break;
 		default : break;
 	}
 }
 
-void UserInterface::clear()
+void		UserInterface::clear()
 {
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, board_text, NULL, NULL);
 }
 
-void UserInterface::render()
+void	UserInterface::render()
 {
 	SDL_RenderPresent(renderer);
 	SDL_RenderCopy(renderer, board_text, NULL, NULL);
-}
-
-
-UserInterface::~UserInterface()
-{
-	SDL_DestroyTexture(black_text);
-	SDL_DestroyTexture(white_text);
-	SDL_DestroyTexture(board_text);
-	SDL_DestroyTexture(help_text);
-	SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
 }
