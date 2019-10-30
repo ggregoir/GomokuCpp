@@ -4,6 +4,7 @@
 #include "Position.h"
 
 #include <array>
+#include <string>
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -11,12 +12,14 @@
 							event.button.button == SDL_BUTTON_LEFT && \
 							event.button.windowID == 1)
 
+class Parameters;
+
 class UserInterface
 {
 
 public:
 
-	UserInterface(void);
+	UserInterface(Parameters params);
 	~UserInterface(void);
 
 	Position	pixel_to_pos(Position mouse);
@@ -37,5 +40,6 @@ private:
 
 	const int		board_x[BOARD_SIZE];
 	const int		board_y[BOARD_SIZE];
+	std::string		theme[2];
 
 };

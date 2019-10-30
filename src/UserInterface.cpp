@@ -1,13 +1,16 @@
 #include "UserInterface.h"
 #include "Position.h"
+#include "Parameters.h"
 
+#include <string>
 #include <iostream>
 
 using namespace std;
 
-UserInterface::UserInterface() :
+UserInterface::UserInterface(Parameters params) :
 board_x { 116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083 },
-board_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118 }
+board_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118 },
+theme { "", "_space" }
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) 
 	{
@@ -23,9 +26,12 @@ board_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Surface *board = IMG_Load("img/board.png");
-    SDL_Surface *black = IMG_Load("img/black2.png");
-    SDL_Surface *white = IMG_Load("img/white.png");
+	string board_name = "img/board" + theme[Parameters::getTheme(params)] + ".png";
+    SDL_Surface *board = IMG_Load(board_name.c_str());
+	string black_name = "img/black" + theme[Parameters::getTheme(params)] + ".png";
+    SDL_Surface *black = IMG_Load(black_name.c_str());
+	string white_name = "img/white" + theme[Parameters::getTheme(params)] + ".png";
+    SDL_Surface *white = IMG_Load(white_name.c_str());
     SDL_Surface *help = IMG_Load("img/help.png");
     SDL_Surface *last_played = IMG_Load("img/last_played.png");
 

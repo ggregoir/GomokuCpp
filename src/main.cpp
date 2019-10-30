@@ -13,11 +13,11 @@ int main(int argc, char** argv)
 	Parameters		params;
 	Menu			menu;
 	GameManager		manager;
-	UserInterface	ui;
 	SDL_Event		event;
 	bool			quit = false;
 
 	menu.loop(params);
+	UserInterface	ui(params);
 	ui.render();
 	try
 	{
