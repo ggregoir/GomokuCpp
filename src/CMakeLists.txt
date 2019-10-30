@@ -18,6 +18,7 @@ set(PROJECT_SRCS
 	Menu.cpp
 	Parameters.cpp
 	UserInterface.cpp
+	GameManager.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SRCS})

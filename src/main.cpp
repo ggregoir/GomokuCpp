@@ -1,14 +1,23 @@
 #include "UserInterface.h"
+#include "GameManager.h"
+#include "Parameters.h"
+#include "Menu.h"
 
 #include <SDL.h>
 #include <iostream>
 
+using namespace std;
+
 int main(int argc, char** argv) 
 {
+	Parameters		params;
+	Menu			menu;
+	GameManager		manager;
 	UserInterface	ui;
 	SDL_Event		event;
 	bool			quit = false;
 
+	menu.loop(params);
 	ui.render();
 	try
 	{
@@ -16,11 +25,16 @@ int main(int argc, char** argv)
 		{
 			SDL_WaitEvent(&event);
 
-			if (event.button.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT && event.button.windowID == 1)
+			if (LEFT_CLICK(event))
 			{
-				auto test = ui.pixel_to_index(Position { event.button.x, event.button.y });
-				ui.place_stone(1, Position { test.x, test.y });
-				ui.place_stone(1, Position { test.x + 1, test.y + 1 });
+				auto color_turn = manager.get_turn_color();
+				auto new_stone = ui.pixel_to_pos(Position { event.button.x, event.button.y });
+				if (manager.modify_board(POS_TO_INDEX(new_stone), color_turn))
+					manager.change_turn();
+				else
+					cout << "Cannot add a stone here" << endl;
+
+				ui.print_board(manager.get_board(), manager.get_last_move());
 				ui.render();
 			}
 			if (event.key.keysym.sym == SDLK_ESCAPE)

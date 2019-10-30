@@ -1,4 +1,5 @@
 #include "UserInterface.h"
+#include "Position.h"
 
 #include <iostream>
 
@@ -60,9 +61,9 @@ UserInterface::~UserInterface()
     SDL_Quit();
 }
 
-SDL_Rect	UserInterface::pixel_to_index(Position mouse)
+Position	UserInterface::pixel_to_pos(Position mouse)
 {
-	SDL_Rect pos;
+	Position pos;
 	int close_x;
 	int close_y;
 	int closest_x = 2000;
@@ -86,16 +87,16 @@ SDL_Rect	UserInterface::pixel_to_index(Position mouse)
 	return (pos);
 }
 
-void		UserInterface::print_board(uint8_t tab[BOARD_CAPACITY], uint32_t last_piece)
+void		UserInterface::print_board(array<uint8_t, BOARD_CAPACITY> board, uint32_t last_move)
 {
 	for (int i = 0; i < BOARD_CAPACITY; ++i)
 	{
-		if (tab[i] == 1)
+		if (board[i] == 1)
 			place_stone(1, Position { i % BOARD_SIZE, i / BOARD_SIZE });
-		else if (tab[i] == 2)
+		else if (board[i] == 2)
 			place_stone(2, Position { i % BOARD_SIZE, i / BOARD_SIZE });
 	}
-	place_stone(4, Position { (int)last_piece % BOARD_SIZE, (int)last_piece / BOARD_SIZE });
+	place_stone(4, INDEX_TO_POS(last_move));
 }
 
 void		UserInterface::place_stone(uint8_t color, Position stone)

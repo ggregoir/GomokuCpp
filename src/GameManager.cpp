@@ -8,8 +8,8 @@ using namespace std;
 
 GameManager::GameManager()
 {
-	for (int i = 0; i < 361; i++) board[i] = 0;
-	cout << "GameManager constructor" << endl;
+	turn = false;
+	for (int i = 0; i < BOARD_CAPACITY; i++) board[i] = 0;
 }
 
 GameManager::~GameManager() {}
@@ -26,4 +26,19 @@ bool		GameManager::modify_board(uint32_t new_index, Stone stone)
 uint32_t	GameManager::get_last_move()
 {
 	return get<0>(history.back());
+}
+
+board_t		GameManager::get_board()
+{
+	return board;
+}
+
+void		GameManager::change_turn()
+{
+	turn = !turn;
+}
+
+Stone		GameManager::get_turn_color()
+{
+	return static_cast<Stone>(turn + 1);
 }

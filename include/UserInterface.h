@@ -1,31 +1,29 @@
 #pragma once
 
+#include "macros.h"
+#include "Position.h"
+
+#include <array>
 #include <SDL.h>
 #include <SDL_image.h>
 
-#define BOARD_SIZE		19
-#define BOARD_CAPACITY	(BOARD_SIZE * BOARD_SIZE)
-
-class Position
-{
-
-public:
-	int	x, y;
-
-};
+#define LEFT_CLICK(event) (event.button.type == SDL_MOUSEBUTTONDOWN && \
+							event.button.button == SDL_BUTTON_LEFT && \
+							event.button.windowID == 1)
 
 class UserInterface
 {
 
 public:
+
 	UserInterface(void);
 	~UserInterface(void);
 
-	SDL_Rect		pixel_to_index(Position mouse);
-	void			place_stone(uint8_t color, Position stone);
-	void			print_board(uint8_t tab[BOARD_CAPACITY], uint32_t lastpiece);
-	void			render();
-	void			clear();
+	Position	pixel_to_pos(Position mouse);
+	void		place_stone(uint8_t color, Position stone);
+	void		print_board(board_t board, uint32_t last_move);
+	void		render();
+	void		clear();
 
 private:
 

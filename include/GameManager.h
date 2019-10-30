@@ -1,5 +1,7 @@
 #pragma once
 
+#include "macros.h"
+
 #include <tuple>
 #include <vector>
 #include <array>
@@ -21,9 +23,13 @@ class GameManager
 		GameManager();
 		~GameManager();
 
-		std::array<uint8_t, 361>					board;
-		std::vector<std::tuple<uint32_t, Stone>>	history;
+		board_t		board;
+		history_t	history;
+		bool		turn;
 
 		bool		modify_board(uint32_t new_index, Stone color);
 		uint32_t	get_last_move();
+		board_t		get_board();
+		void		change_turn();
+		Stone		get_turn_color();
 };
