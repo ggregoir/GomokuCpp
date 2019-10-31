@@ -29,25 +29,22 @@ class Parameters
 		~Parameters();
 
 		// Setters
-		static void		setTheme(Parameters &params, uint8_t theme);
-		static void		setRule(Parameters &params, uint8_t rule);
-		static void		setMode(Parameters &params, uint8_t mode);
-		static void		setPriority(Parameters &params, uint8_t priority);
+		static void		set_theme(Parameters &params, uint8_t theme);
+		static void		set_rule(Parameters &params, uint8_t rule);
+		static void		set_mode(Parameters &params, uint8_t mode);
+		static void		set_priority(Parameters &params, uint8_t priority);
 
 		// Getters
-		static uint8_t	getTheme(Parameters &params);
-		static uint8_t	getRule(Parameters &params);
-		static uint8_t	getMode(Parameters &params);
-		static uint8_t	getPriority(Parameters &params);
-
-		// Debug
-		void			debugState();
+		static uint8_t	get_theme(Parameters &params);
+		static uint8_t	get_rule(Parameters &params);
+		static uint8_t	get_mode(Parameters &params);
+		static uint8_t	get_priority(Parameters &params);
 
 	private:
 		Theme			theme;
 		Mode			mode;
 		Rule			rule;
-		bool			priority; // true => player1 plays first
+		bool			priority;
 	
 };
 

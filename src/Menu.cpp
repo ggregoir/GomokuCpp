@@ -18,19 +18,19 @@ Menu::Menu(void) : tree
 {
 	{ "Welcome to gomoku !", {1, 5, -1, -1}, 2, 0 },
 		{ "Play", {2, 3, 4, -1}, 3, 0 },
-			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
-			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
-			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::setMode, Parameters::getMode },
+			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
+			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
+			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
 		{ "Parameters", {6, 9, 12, -1}, 3, 0 },
 			{ "Theme", {7, 8, -1, -1}, 2, 5 },
-				{ "Classic", {-1, -1, -1, -1}, 0, 6, Parameters::setTheme, Parameters::getTheme },
-				{ "Space", {-1, -1, -1, -1}, 0, 6, Parameters::setTheme, Parameters::getTheme },
+				{ "Classic", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
+				{ "Space", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
 			{ "Rule", {10, 11, -1, -1}, 2, 5 },
-				{ "Standard", {-1, -1, -1, -1}, 0, 9, Parameters::setRule, Parameters::getRule },
-				{ "Restricted", {-1, -1, -1, -1}, 0, 9, Parameters::setRule, Parameters::getRule },
+				{ "Standard", {-1, -1, -1, -1}, 0, 9, Parameters::set_rule, Parameters::get_rule },
+				{ "Restricted", {-1, -1, -1, -1}, 0, 9, Parameters::set_rule, Parameters::get_rule },
 			{ "First to play", {13, 14, -1, -1}, 2, 5 },
-				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 12, Parameters::setPriority, Parameters::getPriority },
-				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 12, Parameters::setPriority, Parameters::getPriority },
+				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 12, Parameters::set_priority, Parameters::get_priority },
+				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 12, Parameters::set_priority, Parameters::get_priority },
 
 } {}
 
@@ -45,8 +45,6 @@ int		Menu::getInput(int max_index)
 	{
 		cout << "Please enter a valid index: ";
 		getline(cin, input);
-
-		// This code converts from string to number safely.
 		stringstream myStream(input);
 		if (input == "quit")
 			exit(EXIT_SUCCESS);
