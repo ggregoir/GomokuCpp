@@ -67,26 +67,21 @@ UserInterface::~UserInterface()
 Position	UserInterface::pixel_to_pos(Position mouse)
 {
 	Position pos;
-	int close_x;
-	int close_y;
-	int closest_x = 2000;
-	int closest_y = 2000;
+	Position closest = { 10000, 10000 };
 
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
-		if (abs(mouse.x - board_x[i]) < abs(closest_x))
+		if (abs(mouse.x - board_x[i]) < closest.x)
 		{
-			closest_x = mouse.x - board_x[i];
-			close_x = i;
+			closest.x = abs(mouse.x - board_x[i]);
+			pos.x = i;
 		}
-		if (abs(mouse.y - board_y[i]) < abs(closest_y))
+		if (abs(mouse.y - board_y[i]) < closest.y)
 		{
-			closest_y = mouse.y - board_y[i];
-			close_y = i;
+			closest.y = abs(mouse.y - board_y[i]);
+			pos.y = i;
 		}
 	}
-	pos.x = close_x;
-	pos.y = close_y;
 	return (pos);
 }
 
