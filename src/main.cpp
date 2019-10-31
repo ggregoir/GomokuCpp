@@ -38,7 +38,10 @@ int main(int argc, char** argv)
 				ui.render();
 			}
 			if (event.key.keysym.sym == SDLK_ESCAPE)
+			{
+				cout << "ESCAPE KEY PRESSED" << endl;
 				quit = true;
+			}
 		}
 	}
 	catch (std::exception &e)
