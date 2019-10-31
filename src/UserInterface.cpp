@@ -26,12 +26,9 @@ theme { "", "_space" }
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	string board_name = "img/board" + theme[Parameters::getTheme(params)] + ".png";
-    SDL_Surface *board = IMG_Load(board_name.c_str());
-	string black_name = "img/black" + theme[Parameters::getTheme(params)] + ".png";
-    SDL_Surface *black = IMG_Load(black_name.c_str());
-	string white_name = "img/white" + theme[Parameters::getTheme(params)] + ".png";
-    SDL_Surface *white = IMG_Load(white_name.c_str());
+    SDL_Surface *board = IMG_Load(("img/board" + theme[Parameters::getTheme(params)] + ".png").c_str());
+    SDL_Surface *black = IMG_Load(("img/black" + theme[Parameters::getTheme(params)] + ".png").c_str());
+    SDL_Surface *white = IMG_Load(("img/white" + theme[Parameters::getTheme(params)] + ".png").c_str());
     SDL_Surface *help = IMG_Load("img/help.png");
     SDL_Surface *last_played = IMG_Load("img/last_played.png");
 
