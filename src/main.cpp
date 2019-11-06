@@ -37,7 +37,7 @@ int main()
 				ui.print_board(manager.get_board(), manager.get_last_move());
 				ui.render();
 			}
-			if (event.key.keysym.sym == SDLK_ESCAPE)
+			if (event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN)
 			{
 				cout << "ESCAPE KEY PRESSED" << endl;
 				quit = true;

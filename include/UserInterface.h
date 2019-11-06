@@ -11,6 +11,7 @@
 #define LEFT_CLICK(event) (event.button.type == SDL_MOUSEBUTTONDOWN && \
 							event.button.button == SDL_BUTTON_LEFT && \
 							event.button.windowID == 1)
+#define RATIO 0.60
 
 class Parameters;
 
@@ -38,8 +39,6 @@ private:
 	SDL_Texture*	board_text;
 	SDL_Texture*	last_played_text;
 
-	const int		board_x[BOARD_SIZE];
-	const int		board_y[BOARD_SIZE];
 	std::string		theme[2];
 
 };

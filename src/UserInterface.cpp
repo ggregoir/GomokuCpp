@@ -7,10 +7,7 @@
 
 using namespace std;
 
-UserInterface::UserInterface(Parameters params) :
-board_x { 116, 169, 222, 276, 329, 383, 436, 490, 544, 598, 652, 705, 759, 813, 867, 921, 975, 1029, 1083 },
-board_y { 104, 160, 216, 272, 328, 385, 441, 497, 553, 610, 666, 723, 779, 835, 892, 948, 1005, 1062, 1118 },
-theme { "", "_space" }
+UserInterface::UserInterface(Parameters params) : theme { "", "_space" }
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) 
 	{
@@ -18,7 +15,7 @@ theme { "", "_space" }
 		exit(EXIT_FAILURE);
 	}
 
-	window = SDL_CreateWindow("Gomoku", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1200, 1200, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Gomoku", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1470 * RATIO, 1470 * RATIO, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
 		cout << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
@@ -26,7 +23,7 @@ theme { "", "_space" }
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Surface *board = IMG_Load(("img/board" + theme[Parameters::get_theme(params)] + ".png").c_str());
+    SDL_Surface *board = IMG_Load(("img/grid_new" + theme[Parameters::get_theme(params)] + ".png").c_str());
     SDL_Surface *black = IMG_Load(("img/black" + theme[Parameters::get_theme(params)] + ".png").c_str());
     SDL_Surface *white = IMG_Load(("img/white" + theme[Parameters::get_theme(params)] + ".png").c_str());
     SDL_Surface *help = IMG_Load("img/help.png");
@@ -67,21 +64,18 @@ UserInterface::~UserInterface()
 Position	UserInterface::pixel_to_pos(Position mouse)
 {
 	Position pos;
-	Position closest = { 10000, 10000 };
+	pos.x = nearbyint((float)(mouse.x - 35 * RATIO) / (float)(70 * RATIO)) - 1;
+	pos.y = nearbyint((float)(mouse.y - 35 * RATIO) / (float)(70 * RATIO)) - 1;
 
-	for (int i = 0; i < BOARD_SIZE; i++)
-	{
-		if (abs(mouse.x - board_x[i]) < closest.x)
-		{
-			closest.x = abs(mouse.x - board_x[i]);
-			pos.x = i;
-		}
-		if (abs(mouse.y - board_y[i]) < closest.y)
-		{
-			closest.y = abs(mouse.y - board_y[i]);
-			pos.y = i;
-		}
-	}
+	if (pos.x == 19)
+		pos.x = 18;
+	if (pos.y == 19)
+		pos.y = 18;
+	if (pos.x == -1)
+		pos.x = 0;
+	if (pos.y == -1)
+		pos.y = 0;
+	printf("posx: %d mousey: %d \nposy: %d mouse.y: %d\n", pos.x, mouse.x, pos.y, mouse.y);
 	return (pos);
 }
 
@@ -101,11 +95,12 @@ void		UserInterface::place_stone(uint8_t color, Position stone)
 {
 	SDL_Rect pos;
 
-	pos.x = board_x[stone.x] - 20;
-	pos.y = board_y[stone.y] - 20;
-	pos.w = 40;
-  	pos.h = 40;
-
+	pos.x = (stone.x + 1) * (70 * RATIO) + (15 * RATIO);
+	pos.y = (stone.y + 1) * (70 * RATIO) + (15 * RATIO);
+	printf("placing stone at %d %d\n", pos.x, pos.y);
+	pos.w = 40 * RATIO;
+  	pos.h = 40 * RATIO;
+	
 	switch(color) 
 	{
 		case 1 : SDL_RenderCopy(renderer, black_text, NULL, &pos);
@@ -119,6 +114,7 @@ void		UserInterface::place_stone(uint8_t color, Position stone)
 		default : break;
 	}
 }
+
 
 void		UserInterface::clear()
 {
