@@ -11,7 +11,9 @@
 #define LEFT_CLICK(event) (event.button.type == SDL_MOUSEBUTTONDOWN && \
 							event.button.button == SDL_BUTTON_LEFT && \
 							event.button.windowID == 1)
-#define RATIO 0.60
+
+#define CLOSE_EVENT(event) ((event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) || event.type == SDL_QUIT)
+#define RATIO 0.65
 
 class Parameters;
 

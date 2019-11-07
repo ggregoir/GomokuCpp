@@ -75,7 +75,6 @@ Position	UserInterface::pixel_to_pos(Position mouse)
 		pos.x = 0;
 	if (pos.y == -1)
 		pos.y = 0;
-	printf("posx: %d mousey: %d \nposy: %d mouse.y: %d\n", pos.x, mouse.x, pos.y, mouse.y);
 	return (pos);
 }
 
@@ -97,7 +96,6 @@ void		UserInterface::place_stone(uint8_t color, Position stone)
 
 	pos.x = (stone.x + 1) * (70 * RATIO) + (15 * RATIO);
 	pos.y = (stone.y + 1) * (70 * RATIO) + (15 * RATIO);
-	printf("placing stone at %d %d\n", pos.x, pos.y);
 	pos.w = 40 * RATIO;
   	pos.h = 40 * RATIO;
 	
