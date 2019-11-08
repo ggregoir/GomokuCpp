@@ -18,13 +18,29 @@ class GameManager
 {
 
 	private:
-	/* data */
+
+		class Board
+		{
+			private:
+
+				std::array<uint8_t, BOARD_CAPACITY>		board;
+
+			public:
+
+				Board();
+				~Board();
+
+				uint8_t	&operator()(int x, int y);
+				uint8_t	&operator()(Position pos);
+				Board	&operator=(uint8_t value);
+		}
 
 	public:
+
 		GameManager();
 		~GameManager();
 
-		board_t		board;
+		Board		board;
 		history_t	history;
 		bool		turn;
 

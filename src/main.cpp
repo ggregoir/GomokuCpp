@@ -28,7 +28,7 @@ int main()
 			if (LEFT_CLICK(event))
 			{
 				auto color_turn = manager.get_turn_color();
-				auto new_stone = ui.pixel_to_pos(Position { event.button.x, event.button.y });
+				auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
 				if (manager.modify_board(POS_TO_INDEX(new_stone), color_turn))
 					manager.change_turn();
 				else

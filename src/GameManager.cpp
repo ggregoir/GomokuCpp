@@ -6,10 +6,16 @@
 
 using namespace std;
 
+GameManager::Board::Board()
+{
+	for (int i = 0; i < BOARD_CAPACITY; i++) board[i] = 0;
+}
+
+GameManager:::Board::~Board() {}
+
 GameManager::GameManager()
 {
 	turn = false;
-	for (int i = 0; i < BOARD_CAPACITY; i++) board[i] = 0;
 }
 
 GameManager::~GameManager() {}
