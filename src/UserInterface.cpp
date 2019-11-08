@@ -63,7 +63,7 @@ UserInterface::~UserInterface()
 
 Position	UserInterface::pixel_to_pos(Position mouse)
 {
-	Position pos;
+	auto	pos = Position();
 	pos.x = nearbyint((float)(mouse.x - 35 * RATIO) / (float)(70 * RATIO)) - 1;
 	pos.y = nearbyint((float)(mouse.y - 35 * RATIO) / (float)(70 * RATIO)) - 1;
 
@@ -83,9 +83,9 @@ void		UserInterface::print_board(array<uint8_t, BOARD_CAPACITY> board, uint32_t 
 	for (int i = 0; i < BOARD_CAPACITY; ++i)
 	{
 		if (board[i] == 1)
-			place_stone(1, Position { i % BOARD_SIZE, i / BOARD_SIZE });
+			place_stone(1, Position(i % BOARD_SIZE, i / BOARD_SIZE));
 		else if (board[i] == 2)
-			place_stone(2, Position { i % BOARD_SIZE, i / BOARD_SIZE });
+			place_stone(2, Position(i % BOARD_SIZE, i / BOARD_SIZE));
 	}
 	place_stone(4, INDEX_TO_POS(last_move));
 }

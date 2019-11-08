@@ -13,7 +13,7 @@
 							event.button.windowID == 1)
 
 #define CLOSE_EVENT(event) ((event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) || event.type == SDL_QUIT)
-#define RATIO 0.65
+#define RATIO 0.60
 
 class Parameters;
 
