@@ -23,7 +23,7 @@ UserInterface::UserInterface(Parameters params) : theme { "", "_space" }
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Surface *board = IMG_Load(("img/grid_new" + theme[Parameters::get_theme(params)] + ".png").c_str());
+    SDL_Surface *board = IMG_Load(("img/board" + theme[Parameters::get_theme(params)] + ".png").c_str());
     SDL_Surface *black = IMG_Load(("img/black" + theme[Parameters::get_theme(params)] + ".png").c_str());
     SDL_Surface *white = IMG_Load(("img/white" + theme[Parameters::get_theme(params)] + ".png").c_str());
     SDL_Surface *help = IMG_Load("img/help.png");
@@ -94,10 +94,10 @@ void		UserInterface::place_stone(uint8_t color, Position stone)
 {
 	SDL_Rect pos;
 
-	pos.x = (stone.x + 1) * (70 * RATIO) + (15 * RATIO);
-	pos.y = (stone.y + 1) * (70 * RATIO) + (15 * RATIO);
-	pos.w = 40 * RATIO;
-  	pos.h = 40 * RATIO;
+	pos.x = (stone.x + 1) * (70 * RATIO) + (10 * RATIO);
+	pos.y = (stone.y + 1) * (70 * RATIO) + (10 * RATIO);
+	pos.w = 50 * RATIO;
+  	pos.h = 50 * RATIO;
 	
 	switch(color) 
 	{
