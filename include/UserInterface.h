@@ -16,6 +16,7 @@
 #define RATIO 1
 
 class Parameters;
+class Board;
 
 class UserInterface
 {

@@ -1,6 +1,7 @@
 #include "UserInterface.h"
 #include "Position.h"
 #include "Parameters.h"
+#include "Board.h"
 
 #include <string>
 #include <iostream>
@@ -78,7 +79,7 @@ Position	UserInterface::pixel_to_pos(Position mouse)
 	return (pos);
 }
 
-void		UserInterface::print_board(array<uint8_t, BOARD_CAPACITY> board, uint32_t last_move)
+void		UserInterface::print_board(Board board, uint32_t last_move)
 {
 	for (int i = 0; i < BOARD_CAPACITY; ++i)
 	{

@@ -29,7 +29,7 @@ int main()
 			{
 				auto color_turn = manager.get_turn_color();
 				auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
-				if (manager.modify_board(POS_TO_INDEX(new_stone), color_turn))
+				if (manager.modify_board(new_stone.index(), color_turn))
 					manager.change_turn();
 				else
 					cout << "Cannot add a stone here" << endl;
