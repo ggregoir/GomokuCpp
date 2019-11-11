@@ -23,17 +23,16 @@ class GameManager
 		{
 			private:
 
-				std::array<uint8_t, BOARD_CAPACITY>		board;
+				std::array<uint8_t, BIT_BOARD_CAPACITY>		bit_board;
 
 			public:
 
 				Board();
 				~Board();
 
-				uint8_t	&operator()(int x, int y);
-				uint8_t	&operator()(Position pos);
-				Board	&operator=(uint8_t value);
-		}
+				uint8_t	operator[](uint32_t index);
+				void	update(uint32_t index, uint8_t value);
+		};
 
 	public:
 
@@ -46,7 +45,7 @@ class GameManager
 
 		bool		modify_board(uint32_t new_index, Stone color);
 		uint32_t	get_last_move();
-		board_t		get_board();
+		Board		get_board();
 		void		change_turn();
 		Stone		get_turn_color();
 };

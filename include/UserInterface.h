@@ -27,7 +27,7 @@ public:
 
 	Position	pixel_to_pos(Position mouse);
 	void		place_stone(uint8_t color, Position stone);
-	void		print_board(board_t board, uint32_t last_move);
+	void		print_board(Board board, uint32_t last_move);
 	void		render();
 	void		clear();
 
