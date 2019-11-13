@@ -8,7 +8,7 @@
 
 using namespace std;
 
-int main() 
+int main(int ac, char **av) 
 {
 	Parameters		params;
 	Menu			menu;
@@ -16,7 +16,8 @@ int main()
 	SDL_Event		event;
 	bool			quit = false;
 
-	menu.loop(params);
+	if (ac == 1 || (strcmp(av[1], "--nomenu") && strcmp(av[1], "-n")))
+		menu.loop(params);
 	UserInterface	ui(params);
 	ui.render();
 	try
@@ -33,7 +34,6 @@ int main()
 					manager.change_turn();
 				else
 					cout << "Cannot add a stone here" << endl;
-
 				ui.print_board(manager.get_board(), manager.get_last_move());
 				ui.render();
 			}
