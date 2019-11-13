@@ -17,7 +17,7 @@ uint8_t		Board::operator[](uint32_t index)
 void		Board::update(uint32_t index, uint8_t value)
 {
 	auto bit_index = index * 2 / 8;
-	auto offset = index * 2 & 8;
+	auto offset = index * 2 % 8;
 
 	// clearing bit pair
 	bit_board[bit_index] &= ~(0B11 << offset);
