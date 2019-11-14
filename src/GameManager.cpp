@@ -10,9 +10,9 @@ GameManager::GameManager()
 
 GameManager::~GameManager() {}
 
-bool		GameManager::modify_board(uint32_t new_index, Stone stone)
+bool		GameManager::modify_board(uint32_t new_index, uint8_t stone)
 {
-	if (board[new_index] != Empty)
+	if (board[new_index] != 0)
 		return false;
 	board.update(new_index, stone);
 	history.push_back(make_tuple(new_index, stone));
@@ -34,7 +34,7 @@ void		GameManager::change_turn()
 	turn = !turn;
 }
 
-Stone		GameManager::get_turn_color()
+uint8_t		GameManager::get_turn_color()
 {
-	return static_cast<Stone>(turn + 1);
+	return (uint8_t)turn + 1;
 }

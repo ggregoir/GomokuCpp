@@ -2,14 +2,6 @@
 
 #include "Board.h"
 
-
-enum Stone
-{
-	Empty,
-	Black,
-	White
-};
-
 class GameManager
 {
 
@@ -22,9 +14,11 @@ class GameManager
 		history_t	history;
 		bool		turn;
 
-		bool		modify_board(uint32_t new_index, Stone color);
+		bool		modify_board(uint32_t new_index, uint8_t color);
 		uint32_t	get_last_move();
 		Board		get_board();
 		void		change_turn();
-		Stone		get_turn_color();
+		uint8_t		get_turn_color();
+
+		bool		aligned_stones(uint8_t color, uint8_t n, uint32_t direction);
 };
