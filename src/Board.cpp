@@ -4,7 +4,7 @@ using namespace std;
 
 Board::Board()
 {
-	for (int i = 0; i < BOARD_CAPACITY; i++) bit_board[i] = 0;
+	for (auto i = 0; i < BIT_BOARD_CAPACITY; i++) bit_board[i] = 0;
 }
 
 Board::~Board() {}
