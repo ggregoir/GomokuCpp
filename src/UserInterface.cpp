@@ -93,25 +93,14 @@ void		UserInterface::print_board(Board board, uint32_t last_move)
 
 void		UserInterface::place_stone(uint8_t color, Position stone)
 {
-	SDL_Rect pos;
+	static SDL_Texture	*text_type[4] = {black_text, white_text, help_text, last_played_text};
+	SDL_Rect	pos;
 
 	pos.x = (stone.x + 1) * (70 * RATIO) + (10 * RATIO);
 	pos.y = (stone.y + 1) * (70 * RATIO) + (10 * RATIO);
 	pos.w = 50 * RATIO;
   	pos.h = 50 * RATIO;
-	
-	switch(color) 
-	{
-		case 1 : SDL_RenderCopy(renderer, black_text, NULL, &pos);
-			break;
-		case 2 : SDL_RenderCopy(renderer, white_text, NULL, &pos);
-			break;
-		case 3 : SDL_RenderCopy(renderer, help_text, NULL, &pos);
-			break;
-		case 4 : SDL_RenderCopy(renderer, last_played_text, NULL, &pos);
-			break;
-		default : break;
-	}
+	SDL_RenderCopy(renderer, text_type[color - 1], nullptr, &pos);
 }
 
 
