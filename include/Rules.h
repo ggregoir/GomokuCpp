@@ -1,5 +1,7 @@
 #pragma once
 
+class Board;
+
 class Rules
 {
 	private:
@@ -25,7 +27,7 @@ class Standard : public Rules
 
 };
 
-class 4 : public Rules
+class Connect4 : public Rules
 {
 	private:
 
