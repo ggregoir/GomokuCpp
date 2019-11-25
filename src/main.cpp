@@ -2,6 +2,9 @@
 #include "GameManager.h"
 #include "Parameters.h"
 #include "Menu.h"
+#include "macros.h"
+
+#include <tuple>
 
 #include <SDL.h>
 #include <iostream>
@@ -28,10 +31,13 @@ int main(int ac, char **av)
 
 			if (LEFT_CLICK(event))
 			{
-				auto color_turn = manager.get_turn_color();
 				auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
-				if (manager.modify_board(new_stone.index(), color_turn))
+				if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
+				{
+					auto res = manager.board.search_stone(manager.get_turn_color());
+					cout << "Index of first stone found: " << res << endl;
 					manager.change_turn();
+				}
 				else
 					cout << "Cannot add a stone here" << endl;
 				ui.print_board(manager.get_board(), manager.get_last_move());
