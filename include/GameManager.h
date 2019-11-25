@@ -19,6 +19,4 @@ class GameManager
 		Board		get_board();
 		void		change_turn();
 		uint8_t		get_turn_color();
-
-		bool		aligned_stones(uint8_t color, uint8_t n, uint32_t direction);
 };
