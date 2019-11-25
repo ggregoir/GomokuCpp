@@ -36,5 +36,5 @@ void		GameManager::change_turn()
 
 uint8_t		GameManager::get_turn_color()
 {
-	return (uint8_t)turn + 1;
+	return (uint8_t)turn;
 }
