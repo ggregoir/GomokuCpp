@@ -5,7 +5,8 @@
 enum Theme
 {
 	Classic,
-	Space
+	Space,
+	Dark
 };
 
 enum Mode
