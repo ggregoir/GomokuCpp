@@ -11,6 +11,17 @@
 
 using namespace std;
 
+void	print_stones(GameManager &manager, uint8_t stone)
+{
+	auto list = manager.board.get_stones(stone);
+	cout << "[";
+	for (size_t i = 0; i < list.size(); i++)
+	{
+		cout << list[i] << ", ";
+	}
+	cout << "]" << endl;
+}
+
 int main(int ac, char **av) 
 {
 	Parameters		params;
@@ -34,8 +45,7 @@ int main(int ac, char **av)
 				auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
 				if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
 				{
-					auto res = manager.board.search_stone(manager.get_turn_color());
-					cout << "Index of first stone found: " << res << endl;
+					print_stones(manager, manager.get_turn_color());
 					manager.change_turn();
 				}
 				else
