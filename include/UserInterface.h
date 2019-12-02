@@ -13,7 +13,7 @@
 							event.button.windowID == 1)
 
 #define CLOSE_EVENT(event) ((event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) || event.type == SDL_QUIT)
-#define RATIO 0.88
+#define RATIO 0.6
 
 class Parameters;
 class Board;
@@ -42,6 +42,6 @@ private:
 	SDL_Texture*	board_text;
 	SDL_Texture*	last_played_text;
 
-	std::string		theme[2];
+	std::string		theme[3];
 
 };

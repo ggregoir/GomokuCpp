@@ -26,7 +26,7 @@ class Menu
 		void			clear();
 
 	private:
-		const SubMenu	tree[15];
+		const SubMenu	tree[16];
 		
 		int				getInput(int max_index);
 		void			displayMenu(int index, Parameters &params);

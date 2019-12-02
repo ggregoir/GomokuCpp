@@ -8,7 +8,7 @@
 
 using namespace std;
 
-UserInterface::UserInterface(Parameters params) : theme { "", "_space" }
+UserInterface::UserInterface(Parameters params) : theme { "", "_space", "_dark" }
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) 
 	{
