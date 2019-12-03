@@ -40,6 +40,7 @@ static int8_t	get_offset(uint8_t byte, uint8_t offset, uint8_t stone)
 		{
 			if ((byte >> offset) & (stone + 1))
 				return (int8_t)offset;
+			offset += 2;
 		}
 	}
 	return -1;
