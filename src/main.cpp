@@ -11,18 +11,6 @@
 
 using namespace std;
 
-// FOR DEBUG
-static void	print_stones(GameManager &manager, uint8_t stone)
-{
-	auto list = manager.board.get_stones(stone);
-	cout << "[";
-	for (size_t i = 0; i < list.size(); i++)
-	{
-		cout << list[i] << ", ";
-	}
-	cout << "]" << endl;
-}
-
 static void	run_ui(Parameters params)
 {
 	GameManager		manager;
@@ -39,7 +27,6 @@ static void	run_ui(Parameters params)
 			auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
 			if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
 			{
-				print_stones(manager, manager.get_turn_color());
 				manager.change_turn();
 			}
 			else

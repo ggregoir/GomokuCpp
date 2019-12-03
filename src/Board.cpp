@@ -1,4 +1,5 @@
 #include "Board.h"
+#include <stdio.h>
 
 using namespace std;
 
@@ -50,16 +51,19 @@ Index			Board::search_stone(uint8_t stone, Index start, uint8_t type_index, bool
 {
 	uint64_t	found_stone = 0;
 
+	if (quit == true)
+		return start;
 	if (start.offset != 0)
 	{
 		auto offset = get_offset(bit_board[start.byte], start.offset, stone);
 		if (offset < 0)
+		{
 			start.byte += 1;
+			start.offset = 0;
+		}
 		else
 			return Index { start.byte, (uint8_t)offset };
 	}
-	if (quit == true)
-		return start;
 	while (start.byte < BIT_BOARD_CAPACITY)
 	{
 		switch (type_index)
