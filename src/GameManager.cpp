@@ -9,6 +9,10 @@ using namespace std;
 GameManager::GameManager()
 {
 	turn = false;
+	if (params.get_priority())
+		player = true;
+	else
+		player = false;
 	for (int i = 0; i < BOARD_CAPACITY; i++) board[i] = 0;
 }
 
@@ -28,7 +32,7 @@ uint32_t	GameManager::get_last_move()
 	return get<0>(history.back());
 }
 
-board_t		GameManager::get_board()
+Board		GameManager::get_board()
 {
 	return board;
 }
@@ -38,7 +42,13 @@ void		GameManager::change_turn()
 	turn = !turn;
 }
 
-Stone		GameManager::get_turn_color()
+void		GameManager::change_player()
 {
-	return static_cast<Stone>(turn + 1);
+	if (params.get_mode() != PlayerVsPlayer && params.get_mode() != EngineVsEngine)
+		player = !player;
+}
+
+uint8_t		GameManager::get_turn_color()
+{
+	return (uint8_t)turn;
 }

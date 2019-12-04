@@ -20,16 +20,18 @@ class GameManager
 	/* data */
 
 	public:
-		GameManager();
+		GameManager(Parameters &params);
 		~GameManager();
 
-		board_t		board;
+		Board		board;
 		history_t	history;
 		bool		turn;
+		bool		player;
 
-		bool		modify_board(uint32_t new_index, Stone color);
+		bool		modify_board(uint32_t new_index, uint8_t color);
 		uint32_t	get_last_move();
-		board_t		get_board();
+		Board		get_board();
 		void		change_turn();
-		Stone		get_turn_color();
+		void		change_player(Parameters &params);
+		uint8_t		get_turn_color();
 };
