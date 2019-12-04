@@ -6,12 +6,10 @@ using namespace std;
 GameManager::GameManager(Parameters params)
 {
 	turn = false;
-	// if (params.get_priority())
-	if (true)
+	if (params.get_priority(params))
 		player = true;
 	else
 		player = false;
-	(void)params;
 }
 
 GameManager::~GameManager() {}
@@ -40,6 +38,11 @@ void		GameManager::change_turn()
 	turn = !turn;
 }
 
+bool		GameManager::get_player()
+{
+	return player;
+}
+
 uint8_t		GameManager::get_turn_color()
 {
 	return (uint8_t)turn;
@@ -47,7 +50,7 @@ uint8_t		GameManager::get_turn_color()
 
 void		GameManager::change_player(Parameters &params)
 {
-	// if (params.get_mode() != PlayerVsPlayer && params.get_mode() != EngineVsEngine)
-		// player = !player;
-	(void)params;
+	if (params.get_mode(params) != PlayerVsPlayer && params.get_mode(params) != EngineVsEngine)
+		player = !player;
+	
 }

@@ -28,6 +28,11 @@ static void	run_ui(Parameters params)
 			if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
 			{
 				manager.change_turn();
+				manager.change_player(params);
+				if (manager.get_player())
+					cout << "ia to play" << endl;
+				else
+					cout << "human to play" << endl;
 			}
 			else
 				cout << "Cannot add a stone here" << endl;
