@@ -1,10 +1,7 @@
 #pragma once
 
-#include "macros.h"
-
-#include <tuple>
-#include <vector>
-#include <array>
+#include "Board.h"
+#include "Parameters.h"
 
 enum Stone
 {
@@ -20,7 +17,7 @@ class GameManager
 	/* data */
 
 	public:
-		GameManager(Parameters &params);
+		GameManager(Parameters params);
 		~GameManager();
 
 		Board		board;

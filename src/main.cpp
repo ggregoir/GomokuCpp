@@ -13,7 +13,7 @@ using namespace std;
 
 static void	run_ui(Parameters params)
 {
-	GameManager		manager;
+	GameManager		manager(params);
 	UserInterface	ui(params);
 	SDL_Event		event;
 	bool			quit = false;

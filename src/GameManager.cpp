@@ -1,28 +1,26 @@
 #include "GameManager.h"
-
-#include <string.h>
-#include <tuple>
-#include <iostream>
+#include "Position.h"
 
 using namespace std;
 
-GameManager::GameManager()
+GameManager::GameManager(Parameters params)
 {
 	turn = false;
-	if (params.get_priority())
+	// if (params.get_priority())
+	if (true)
 		player = true;
 	else
 		player = false;
-	for (int i = 0; i < BOARD_CAPACITY; i++) board[i] = 0;
+	(void)params;
 }
 
 GameManager::~GameManager() {}
 
-bool		GameManager::modify_board(uint32_t new_index, Stone stone)
+bool		GameManager::modify_board(uint32_t new_index, uint8_t stone)
 {
-	if (board[new_index] != Empty)
+	if (board[new_index] != 0)
 		return false;
-	board[new_index] = stone;
+	board.update(new_index, stone);
 	history.push_back(make_tuple(new_index, stone));
 	return true;
 }
@@ -42,13 +40,14 @@ void		GameManager::change_turn()
 	turn = !turn;
 }
 
-void		GameManager::change_player()
-{
-	if (params.get_mode() != PlayerVsPlayer && params.get_mode() != EngineVsEngine)
-		player = !player;
-}
-
 uint8_t		GameManager::get_turn_color()
 {
 	return (uint8_t)turn;
+}
+
+void		GameManager::change_player(Parameters &params)
+{
+	// if (params.get_mode() != PlayerVsPlayer && params.get_mode() != EngineVsEngine)
+		// player = !player;
+	(void)params;
 }
