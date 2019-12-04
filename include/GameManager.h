@@ -29,7 +29,6 @@ class GameManager
 		uint32_t	get_last_move();
 		Board		get_board();
 		bool		get_player();
-		void		change_turn();
 		void		change_player(Parameters &params);
 		uint8_t		get_turn_color();
 };

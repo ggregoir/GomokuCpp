@@ -27,7 +27,6 @@ static void	run_ui(Parameters params)
 			auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
 			if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
 			{
-				manager.change_turn();
 				manager.change_player(params);
 				if (manager.get_player())
 					cout << "ia to play" << endl;

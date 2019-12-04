@@ -33,11 +33,6 @@ Board		GameManager::get_board()
 	return board;
 }
 
-void		GameManager::change_turn()
-{
-	turn = !turn;
-}
-
 bool		GameManager::get_player()
 {
 	return player;
@@ -50,6 +45,7 @@ uint8_t		GameManager::get_turn_color()
 
 void		GameManager::change_player(Parameters &params)
 {
+	turn = !turn;
 	if (params.get_mode(params) != PlayerVsPlayer && params.get_mode(params) != EngineVsEngine)
 		player = !player;
 	
