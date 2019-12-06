@@ -19,7 +19,8 @@ enum Mode
 enum Rule
 {
 	Standard,
-	Restricted
+	Restricted,
+	Connect4
 };
 
 class Parameters

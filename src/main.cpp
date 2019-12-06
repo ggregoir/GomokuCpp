@@ -25,16 +25,32 @@ static void	run_ui(Parameters params)
 		if (LEFT_CLICK(event))
 		{
 			auto new_stone = ui.pixel_to_pos(Position(event.button.x, event.button.y));
-			if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
+			if (params.get_rule(params) == Connect4)
 			{
-				manager.change_player(params);
-				if (manager.get_player())
-					cout << "ia to play" << endl;
+				if (manager.modify_board_c4(new_stone.index(), manager.get_turn_color() + 1))
+				{
+					manager.change_player(params);
+					if (manager.get_player())
+						cout << "ia to play" << endl;
+					else
+						cout << "human to play" << endl;
+				}
 				else
-					cout << "human to play" << endl;
+					cout << "Cannot add a stone here" << endl;
 			}
 			else
-				cout << "Cannot add a stone here" << endl;
+			{
+				if (manager.modify_board(new_stone.index(), manager.get_turn_color() + 1))
+				{
+					manager.change_player(params);
+					if (manager.get_player())
+						cout << "ia to play" << endl;
+					else
+						cout << "human to play" << endl;
+				}
+				else
+					cout << "Cannot add a stone here" << endl;
+			}
 			ui.print_board(manager.get_board(), manager.get_last_move());
 			ui.render();
 		}

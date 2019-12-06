@@ -21,17 +21,18 @@ Menu::Menu(void) : tree
 			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
 			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
 			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
-		{ "Parameters", {6, 10, 13, -1}, 3, 0, nullptr, nullptr },
+		{ "Parameters", {6, 10, 14, -1}, 3, 0, nullptr, nullptr },
 			{ "Theme", {7, 8, 9, -1}, 3, 5, nullptr, nullptr },
 				{ "Classic", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
 				{ "Space", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
 				{ "Dark", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
-			{ "Rule", {11, 12, -1, -1}, 2, 5, nullptr, nullptr },
+			{ "Rule", {11, 12, 13, -1}, 3, 5, nullptr, nullptr },
 				{ "Standard", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
 				{ "Restricted", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
-			{ "First to play", {14, 15, -1, -1}, 2, 5, nullptr, nullptr },
-				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 13, Parameters::set_priority, Parameters::get_priority },
-				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 13, Parameters::set_priority, Parameters::get_priority },
+				{ "Connect4", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
+			{ "First to play", {15, 16, -1, -1}, 2, 5, nullptr, nullptr },
+				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
+				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
 
 } {}
 

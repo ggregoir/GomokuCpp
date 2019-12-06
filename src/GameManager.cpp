@@ -23,6 +23,17 @@ bool		GameManager::modify_board(uint32_t new_index, uint8_t stone)
 	return true;
 }
 
+bool		GameManager::modify_board_c4(uint32_t new_index, uint8_t stone)
+{
+	if (board[new_index] != 0)
+		return false;
+	while (board[new_index + 19] == 0)
+		new_index += 19;
+	board.update(new_index, stone);
+	history.push_back(make_tuple(new_index, stone));
+	return true;
+}
+
 uint32_t	GameManager::get_last_move()
 {
 	return get<0>(history.back());
