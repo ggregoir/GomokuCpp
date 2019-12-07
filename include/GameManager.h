@@ -25,8 +25,7 @@ class GameManager
 		bool		turn;
 		bool		player;
 
-		bool		modify_board(uint32_t new_index, uint8_t color);
-		bool		modify_board_c4(uint32_t new_index, uint8_t stone);
+		bool		modify_board(uint32_t new_index, uint8_t color, bool c4_rule);
 		uint32_t	get_last_move();
 		Board		get_board();
 		bool		get_player();

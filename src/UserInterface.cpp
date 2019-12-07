@@ -24,9 +24,9 @@ UserInterface::UserInterface(Parameters params) : theme { "", "_space", "_dark" 
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Surface *board = IMG_Load(("img/board" + theme[Parameters::get_theme(params)] + ".png").c_str());
-    SDL_Surface *black = IMG_Load(("img/black" + theme[Parameters::get_theme(params)] + ".png").c_str());
-    SDL_Surface *white = IMG_Load(("img/white" + theme[Parameters::get_theme(params)] + ".png").c_str());
+    SDL_Surface *board = IMG_Load(("img/board" + theme[params.theme] + ".png").c_str());
+    SDL_Surface *black = IMG_Load(("img/black" + theme[params.theme] + ".png").c_str());
+    SDL_Surface *white = IMG_Load(("img/white" + theme[params.theme] + ".png").c_str());
     SDL_Surface *help = IMG_Load("img/help.png");
     SDL_Surface *last_played = IMG_Load("img/last_played.png");
 
