@@ -62,7 +62,7 @@ void	UserInterface::FreeSDL()
 	SDL_Quit();
 }
 
-Position	UserInterface::pixel_to_pos(Position mouse)
+Position	UserInterface::get_user_input(Position mouse)
 {
 	auto	pos = Position();
 	pos.x = nearbyint((float)(mouse.x - 35 * RATIO) / (float)(70 * RATIO)) - 1;

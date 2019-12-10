@@ -25,7 +25,7 @@ public:
 
 	UserInterface(Parameters params);
 
-	Position	pixel_to_pos(Position mouse);
+	Position	get_user_input(Position mouse);
 	void		place_stone(uint8_t color, Position stone);
 	void		print_board(Board board, uint32_t last_move);
 	void		render();
