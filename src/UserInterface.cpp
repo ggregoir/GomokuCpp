@@ -51,15 +51,15 @@ UserInterface::UserInterface(Parameters params) : theme { "", "_space", "_dark" 
 
 }
 
-UserInterface::~UserInterface()
+void	UserInterface::FreeSDL()
 {
 	SDL_DestroyTexture(black_text);
 	SDL_DestroyTexture(white_text);
 	SDL_DestroyTexture(board_text);
 	SDL_DestroyTexture(help_text);
 	SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+	SDL_DestroyWindow(window);
+	SDL_Quit();
 }
 
 Position	UserInterface::pixel_to_pos(Position mouse)

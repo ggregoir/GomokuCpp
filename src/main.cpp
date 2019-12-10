@@ -44,6 +44,7 @@ static void	run_ui(Parameters params)
 			quit = true;
 		}
 	}
+	ui.FreeSDL();
 }
 
 int main(int ac, char **av) 
