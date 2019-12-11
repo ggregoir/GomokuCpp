@@ -1,123 +1,104 @@
 #include "Board.h"
-#include <stdio.h>
+#include <algorithm>
 
 using namespace std;
 
-Board::Board()
+Board::Board() {}
+
+Board::~Board()
 {
-	for (auto i = 0; i < BIT_BOARD_CAPACITY; i++) bit_board[i] = 0;
+	if (board != nullptr)
+		delete []board;
 }
 
-Board::~Board() {}
-
-uint8_t		Board::operator[](uint32_t index)
+void	Board::add(size_t index, uint8_t player)
 {
-	return (bit_board[index * 2 / 8] >> (index * 2 % 8)) & 0B11;
+	if (board != nullptr)
+		board[index] = player + 1;
+	indexes[player].push_back(index);
 }
 
-void		Board::update(uint32_t index, uint8_t value)
+uint8_t	Board::get(size_t index)
 {
-	auto bit_index = index * 2;
-	auto byte_index = bit_index / 8;
-	auto offset = index * 2 % 8;
-
-	// clearing bit pair
-	bit_board[byte_index] &= ~(0B11 << offset);
-	// setting bit pair to value
-	bit_board[byte_index] |= value << offset;
-}
-
-static uint64_t	g_mask[8] =
-{
-	0X5555555555555555, 0X55555555, 0X5555, 0X55, // masks to find a black stone
-	0XAAAAAAAAAAAAAAAA, 0XAAAAAAAA, 0XAAAA, 0xAA  // masks to find a white stone
-};
-
-static int8_t	get_offset(uint8_t byte, uint8_t offset, uint8_t stone)
-{
-	if ((byte >> offset) & g_mask[3 + 4 * stone])
+	for (uint8_t player = 0; player < 2; player++)
 	{
-		while (offset < 8)
+		for (size_t i = 0; i < indexes[player].size(); i++)
 		{
-			if ((byte >> offset) & (stone + 1))
-				return (int8_t)offset;
-			offset += 2;
+			if (indexes[player][i] == index)
+				return player + 1;
 		}
 	}
-	return -1;
+	return 0;
 }
 
-Index			Board::search_stone(uint8_t stone, Index start, uint8_t type_index, bool quit)
+void	Board::remove(size_t index)
 {
-	uint64_t	found_stone = 0;
-
-	if (quit == true)
-		return start;
-	if (start.offset != 0)
+	for (auto & vec : indexes)
 	{
-		auto offset = get_offset(bit_board[start.byte], start.offset, stone);
-		if (offset < 0)
+		for (size_t i = 0; i < vec.size(); i++)
 		{
-			start.byte += 1;
-			start.offset = 0;
-		}
-		else
-			return Index { start.byte, (uint8_t)offset };
-	}
-	while (start.byte < BIT_BOARD_CAPACITY)
-	{
-		switch (type_index)
-		{
-			case 0: found_stone = (*(uint64_t*)(bit_board + start.byte)) & g_mask[0 + 4 * stone];
-				break;
-			case 1: found_stone = (*(uint32_t*)(bit_board + start.byte)) & g_mask[1 + 4 * stone];
-				break;
-			case 2: found_stone = (*(uint16_t*)(bit_board + start.byte)) & g_mask[2 + 4 * stone];
-				break;
-			case 3: found_stone = bit_board[start.byte] & g_mask[3 + 4 * stone];
-				break;
-			default:
-				break;
-		}
-		if (found_stone != 0)
-		{
-			if (type_index == 3)
-			{
-				start.offset = (uint8_t)get_offset(bit_board[start.byte], start.offset, stone);
-				quit = true;
-			}
-			return search_stone(stone, start, type_index + 1, quit);
-		}
-		start.offset = 0;
-		switch (type_index)
-		{
-			case 0: start.byte += 8;
-				break;
-			case 1:	start.byte += 4;
-				break;
-			case 2: start.byte += 2;
-				break;
-			case 3: start.byte += 1;
-				break;
-			default:
-				break;
+			if (vec[i] == index)
+				vec.erase(vec.begin() + i);
 		}
 	}
-	return Index { -1, 0 };
+	if (board == nullptr)
+		board[index] = 0;
 }
 
-vector<uint32_t>	Board::get_stones(uint8_t stone)
+void	Board::clear_board()
 {
-	Index				current;
-	vector<uint32_t>	stone_list;
-	
-	while (true)
+	if (board != nullptr)
 	{
-		current = search_stone(stone, current);
-		if (current.byte < 0)
-			break;
-		stone_list.push_back(current.byte * 4 + current.offset / 2);
-		current.increment();
+		delete []board;
+		board = nullptr;
 	}
-	return stone_list;
+}
+
+void	Board::clear_indexes()
+{
+	indexes[0].clear();
+	indexes[1].clear();
+}
+
+board_t	Board::get_board()
+{
+	board_t	new_board;
+
+	if (board == nullptr)
+		generate_board(indexes);
+	std::copy(board, board + BOARD_CAPACITY, new_board.begin());
+	return new_board;
+}
+
+void	Board::update(board_t &new_board)
+{
+	clear_board();
+	clear_indexes();
+	board = new uint8_t[BOARD_CAPACITY];
+	std::copy(new_board.begin(), new_board.end(), board);
+	generate_indexes(new_board);
+}
+
+void	Board::generate_indexes(board_t &new_board)
+{
+	if (indexes[0].size() || indexes[1].size())
+		clear_indexes();
+	for (size_t i = 0; i < BOARD_CAPACITY; i++)
+	{
+		if (new_board[i] > 0)
+			indexes[new_board[i]].push_back(i);
+	}
+}
+
+void	Board::generate_board(indexes_t &indexes)
+{
+	if (board != nullptr)
+		clear_board();
+	board = new uint8_t[BOARD_CAPACITY];
+	std::fill(board, board + BOARD_CAPACITY, 0);
+	for (uint8_t player = 0; player < 2; player++)
+	{
+		for (size_t i = 0; i < indexes[player].size(); i++)
+			board[indexes[player][i]] = player + 1;
+	}
 }

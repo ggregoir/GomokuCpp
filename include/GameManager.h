@@ -5,17 +5,16 @@
 
 #include <string>
 
-enum Stone
-{
-	Empty,
-	Black,
-	White
-};
-
 enum PlayerMode
 {
 	Engine,
 	Human
+};
+
+struct History
+{
+	board_t	board;
+	size_t	last_move;
 };
 
 class GameManager
@@ -28,20 +27,21 @@ class GameManager
 		GameManager(Parameters params);
 		~GameManager();
 
-		Parameters	params;
-		Board		board;
-		history_t	history;
-		bool		turn;
-		bool		player;
+		Parameters				params;
+		Board					board;
+		std::vector<History>	history;
+		bool					player;
+		uint8_t					player_mode;
 
-		void		run_loop();
-		bool		modify_board(uint32_t new_index, uint8_t color, bool c4_rule);
-		uint32_t	get_last_move();
-		Board		get_board();
+		void					run_loop();
+		bool					can_place(size_t index, uint8_t player);
+		void					change_player_turn();
+		std::string				current_player_color();
+		size_t					get_connect4_index(size_t index);
+		void					play_move(size_t index, uint8_t player);
+		void					add_in_history(board_t board, size_t last_move);
+		size_t					get_last_move();
 
-		bool		player_mode();
-		uint8_t		current_color();
-		void		change_player_turn();
-		std::string	current_color_name();
-		std::string	player_mode_name();
+		// temporary
+		size_t					dumb_algo(board_t grid);
 };

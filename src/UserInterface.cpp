@@ -79,7 +79,7 @@ Position	UserInterface::get_user_input(Position mouse)
 	return (pos);
 }
 
-void		UserInterface::print_board(Board board, uint32_t last_move)
+void		UserInterface::print_board(board_t board, size_t last_move)
 {
 	for (int i = 0; i < BOARD_CAPACITY; ++i)
 	{

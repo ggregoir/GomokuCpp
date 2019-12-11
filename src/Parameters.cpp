@@ -7,6 +7,7 @@ Parameters::Parameters()
 	this->mode = PlayerVsPlayer;
 	this->rule = Standard;
 	this->theme = Classic;
+	this->priority = true;
 }
 
 Parameters::~Parameters() {}

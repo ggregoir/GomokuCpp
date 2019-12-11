@@ -25,12 +25,12 @@ public:
 
 	UserInterface(Parameters params);
 
-	Position	get_user_input(Position mouse);
-	void		place_stone(uint8_t color, Position stone);
-	void		print_board(Board board, uint32_t last_move);
-	void		render();
-	void		clear();
-	void		FreeSDL();
+	Position		get_user_input(Position mouse);
+	void			place_stone(uint8_t player, Position stone);
+	void			print_board(board_t board, size_t last_move);
+	void			render();
+	void			clear();
+	void			FreeSDL();
 
 private:
 

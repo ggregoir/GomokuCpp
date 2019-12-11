@@ -31,8 +31,8 @@ Menu::Menu(void) : tree
 				{ "Restricted", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
 				{ "Connect4", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
 			{ "First to play", {15, 16, -1, -1}, 2, 5, nullptr, nullptr },
-				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
 				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
+				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
 
 } {}
 
