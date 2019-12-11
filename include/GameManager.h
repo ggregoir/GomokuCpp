@@ -40,7 +40,7 @@ class GameManager
 		size_t					get_connect4_index(size_t index);
 		void					play_move(size_t index, uint8_t player);
 		void					add_in_history(board_t board, size_t last_move);
-		size_t					get_last_move();
+		int						get_last_move();
 
 		// temporary
 		size_t					dumb_algo(board_t grid);

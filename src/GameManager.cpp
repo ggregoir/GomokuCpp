@@ -58,9 +58,9 @@ void		GameManager::add_in_history(board_t board, size_t last_move)
 	history.push_back(History { board, last_move });
 }
 
-size_t		GameManager::get_last_move()
+int			GameManager::get_last_move()
 {
-	return history.size() ? history.back().last_move : 0;
+	return history.size() ? history.back().last_move : -1;
 }
 
 size_t		GameManager::dumb_algo(board_t grid)
