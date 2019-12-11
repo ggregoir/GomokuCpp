@@ -19,7 +19,7 @@ class Board
 		void		add(size_t index, uint8_t player);
 		uint8_t		get(size_t index);
 		void		remove(size_t index);
-		void		update(board_t &new_board);
+		void		update(board_t new_board);
 		void		clear_board();
 		void		clear_indexes();
 		board_t		get_board();

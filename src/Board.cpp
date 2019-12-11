@@ -70,7 +70,7 @@ board_t	Board::get_board()
 	return new_board;
 }
 
-void	Board::update(board_t &new_board)
+void	Board::update(board_t new_board)
 {
 	clear_board();
 	clear_indexes();

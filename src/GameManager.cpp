@@ -85,6 +85,14 @@ void		GameManager::run_loop()
 		if (player_mode == Human)
 		{
 			SDL_WaitEvent(&event);
+			if (UNDO_EVENT(event))
+			{
+				history.pop_back();
+				history.pop_back();
+				board.update(history.back().board);
+				ui.print_board(board.get_board(), get_last_move());
+				ui.render();
+			}
 			if (LEFT_CLICK(event))
 			{
 				auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
