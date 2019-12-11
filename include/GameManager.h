@@ -14,7 +14,7 @@ enum PlayerMode
 struct History
 {
 	board_t	board;
-	size_t	last_move;
+	int		last_move;
 };
 
 class GameManager
@@ -39,7 +39,7 @@ class GameManager
 		std::string				current_player_color();
 		size_t					get_connect4_index(size_t index);
 		void					play_move(size_t index, uint8_t player);
-		void					add_in_history(board_t board, size_t last_move);
+		void					add_in_history(board_t board, int last_move);
 		int						get_last_move();
 
 		// temporary

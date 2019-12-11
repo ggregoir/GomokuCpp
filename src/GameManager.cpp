@@ -53,7 +53,7 @@ void		GameManager::play_move(size_t index, uint8_t player)
 	add_in_history(board.get_board(), index);
 }
 
-void		GameManager::add_in_history(board_t board, size_t last_move)
+void		GameManager::add_in_history(board_t board, int last_move)
 {
 	history.push_back(History { board, last_move });
 }
