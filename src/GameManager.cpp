@@ -82,10 +82,9 @@ void		GameManager::run_loop()
 	ui.render();
 	while (!quit)
 	{
-		SDL_WaitEvent(&event);
-
 		if (player_mode == Human)
 		{
+			SDL_WaitEvent(&event);
 			if (LEFT_CLICK(event))
 			{
 				auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
@@ -111,6 +110,7 @@ void		GameManager::run_loop()
 		}
 		else
 		{
+			SDL_PollEvent(&event);
 			auto start = chrono::system_clock::now();
 			// Run negamax here
 			auto stone = INDEX_TO_POS(dumb_algo(board.get_board()));
