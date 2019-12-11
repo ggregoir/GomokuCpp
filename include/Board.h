@@ -20,6 +20,7 @@ class Board
 		uint8_t		get(size_t index);
 		void		remove(size_t index);
 		void		update(board_t new_board);
+		int			is_draw();
 		void		clear_board();
 		void		clear_indexes();
 		board_t		get_board();

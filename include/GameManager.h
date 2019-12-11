@@ -11,6 +11,14 @@ enum PlayerMode
 	Human
 };
 
+enum GameStatus
+{
+	Playing,
+	PlayerOneWin,
+	PlayerTwoWin,
+	Draw
+};
+
 struct History
 {
 	board_t	board;

@@ -60,6 +60,17 @@ void	Board::clear_indexes()
 	indexes[1].clear();
 }
 
+int	Board::is_draw()
+{
+	int total = 0;
+	total = indexes[0].size();
+	total += indexes[1].size();
+	if (total == 361)
+		return(1);
+	else
+		return(0);
+}
+
 board_t	Board::get_board()
 {
 	board_t	new_board;

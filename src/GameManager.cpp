@@ -78,38 +78,64 @@ void		GameManager::run_loop()
 	UserInterface	ui(params);
 	SDL_Event		event;
 	bool			quit = false;
+	uint8_t 		game_status = 0;
 
 	ui.render();
 	while (!quit)
 	{
-		if (player_mode == Human)
+		SDL_WaitEvent(&event);
+		while (game_status == 0)
 		{
-			SDL_WaitEvent(&event);
-			if (UNDO_EVENT(event))
+			if (player_mode == Human)
 			{
-				if (history.size() > 0)
-					history.pop_back();
-				if (history.size() > 0)
-					history.pop_back();
-				if (history.size() == 0)
+				SDL_WaitEvent(&event);
+				if (UNDO_EVENT(event))
 				{
-					board_t	new_board;
-					std::fill(new_board.begin(), new_board.end(), 0);
-					board.update(new_board);
+					if (history.size() > 0)
+						history.pop_back();
+					if (history.size() > 0)
+						history.pop_back();
+					if (history.size() == 0)
+					{
+						board_t	new_board;
+						std::fill(new_board.begin(), new_board.end(), 0);
+						board.update(new_board);
+					}
+					else
+						board.update(history.back().board);
+					ui.print_board(board.get_board(), get_last_move());
+					ui.render();
 				}
-				else
-					board.update(history.back().board);
-				ui.print_board(board.get_board(), get_last_move());
-				ui.render();
+				if (LEFT_CLICK(event))
+				{
+					auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
+					if (can_place(stone.index(), player))
+					{
+						play_move(stone.index(), player);
+						printf("Player %s (human) played at position (%d, %d)\n",
+							current_player_color().c_str(), stone.x, stone.y);
+						change_player_turn();
+					}
+					else
+						printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
+
+					ui.print_board(board.get_board(), get_last_move());
+					ui.render();
+				}
 			}
-			if (LEFT_CLICK(event))
+			else
 			{
-				auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
+				SDL_PollEvent(&event);
+				auto start = chrono::system_clock::now();
+				// Run negamax here
+				auto stone = INDEX_TO_POS(dumb_algo(board.get_board()));
+				auto end = chrono::system_clock::now();
+				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
 				if (can_place(stone.index(), player))
 				{
 					play_move(stone.index(), player);
-					printf("Player %s (human) played at position (%d, %d)\n",
-						current_player_color().c_str(), stone.x, stone.y);
+					printf("Player %s (engine) played at position (%d, %d) in %lld ms\n",
+						current_player_color().c_str(), stone.x, stone.y, duration.count());
 					change_player_turn();
 				}
 				else
@@ -118,27 +144,17 @@ void		GameManager::run_loop()
 				ui.print_board(board.get_board(), get_last_move());
 				ui.render();
 			}
-		}
-		else
-		{
-			SDL_PollEvent(&event);
-			auto start = chrono::system_clock::now();
-			// Run negamax here
-			auto stone = INDEX_TO_POS(dumb_algo(board.get_board()));
-			auto end = chrono::system_clock::now();
-			auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
-			if (can_place(stone.index(), player))
+			if (board.is_draw())
 			{
-				play_move(stone.index(), player);
-				printf("Player %s (engine) played at position (%d, %d) in %lld ms\n",
-					current_player_color().c_str(), stone.x, stone.y, duration.count());
-				change_player_turn();
+				printf("C'est un draw.\n");
+				game_status = Draw;
 			}
-			else
-				printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
-
-			ui.print_board(board.get_board(), get_last_move());
-			ui.render();
+			if (CLOSE_EVENT(event))
+			{
+				quit = true;
+				printf("Exit requested by user. Exiting now...\n");
+				break;
+			}
 		}
 		if (CLOSE_EVENT(event))
 		{
