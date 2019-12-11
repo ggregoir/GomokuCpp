@@ -81,12 +81,12 @@ void	Board::update(board_t new_board)
 
 void	Board::generate_indexes(board_t &new_board)
 {
-	if (indexes[0].size() || indexes[1].size())
+	if (indexes[0].size() > 0 || indexes[1].size() > 0)
 		clear_indexes();
 	for (size_t i = 0; i < BOARD_CAPACITY; i++)
 	{
 		if (new_board[i] > 0)
-			indexes[new_board[i]].push_back(i);
+			indexes[new_board[i] - 1].push_back(i);
 	}
 }
 

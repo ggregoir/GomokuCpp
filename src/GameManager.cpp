@@ -87,9 +87,18 @@ void		GameManager::run_loop()
 			SDL_WaitEvent(&event);
 			if (UNDO_EVENT(event))
 			{
-				history.pop_back();
-				history.pop_back();
-				board.update(history.back().board);
+				if (history.size() > 0)
+					history.pop_back();
+				if (history.size() > 0)
+					history.pop_back();
+				if (history.size() == 0)
+				{
+					board_t	new_board;
+					std::fill(new_board.begin(), new_board.end(), 0);
+					board.update(new_board);
+				}
+				else
+					board.update(history.back().board);
 				ui.print_board(board.get_board(), get_last_move());
 				ui.render();
 			}
@@ -106,12 +115,6 @@ void		GameManager::run_loop()
 				else
 					printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
 
-				ui.print_board(board.get_board(), get_last_move());
-				ui.render();
-			}
-			else if (false)
-			{
-				/* implement undo action */
 				ui.print_board(board.get_board(), get_last_move());
 				ui.render();
 			}
