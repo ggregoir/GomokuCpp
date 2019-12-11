@@ -79,7 +79,7 @@ Position	UserInterface::get_user_input(Position mouse)
 	return (pos);
 }
 
-void		UserInterface::print_board(board_t board, size_t last_move)
+void		UserInterface::print_board(board_t board, int last_move)
 {
 	for (int i = 0; i < BOARD_CAPACITY; ++i)
 	{
@@ -88,7 +88,11 @@ void		UserInterface::print_board(board_t board, size_t last_move)
 		else if (board[i] == 2)
 			place_stone(2, Position(i % BOARD_SIZE, i / BOARD_SIZE));
 	}
-	place_stone(4, INDEX_TO_POS(last_move));
+	if (last_move >= 0)
+	{
+		printf("%d\n", last_move);
+		place_stone(4, INDEX_TO_POS(last_move));
+	}
 }
 
 void		UserInterface::place_stone(uint8_t color, Position stone)

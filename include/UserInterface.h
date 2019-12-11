@@ -29,7 +29,7 @@ public:
 
 	Position		get_user_input(Position mouse);
 	void			place_stone(uint8_t player, Position stone);
-	void			print_board(board_t board, size_t last_move);
+	void			print_board(board_t board, int last_move);
 	void			render();
 	void			clear();
 	void			FreeSDL();
