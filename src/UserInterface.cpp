@@ -89,10 +89,7 @@ void		UserInterface::print_board(board_t board, int last_move)
 			place_stone(2, Position(i % BOARD_SIZE, i / BOARD_SIZE));
 	}
 	if (last_move >= 0)
-	{
-		printf("%d\n", last_move);
 		place_stone(4, INDEX_TO_POS(last_move));
-	}
 }
 
 void		UserInterface::place_stone(uint8_t color, Position stone)
