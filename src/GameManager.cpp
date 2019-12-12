@@ -169,7 +169,7 @@ void		GameManager::run_loop()
 			if (CLOSE_EVENT(event))
 			{
 				quit = true;
-				printf("Exit requested by user. Exiting now...\n");
+				printf("End of the game.\n");
 				break;
 			}
 		}
