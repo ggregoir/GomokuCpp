@@ -2,6 +2,26 @@
 
 #include "macros.h"
 
+enum Sequence
+{
+	None,
+	BlockedTwo,
+	FreeTwo,
+	BlockedThree,
+	FreeThree,
+	BlockedFour,
+	FreeFour,
+	Five
+};
+
+enum Direction
+{
+	Left = -1,
+	Right = 1,
+	Up = -19,
+	Down = 19
+};
+
 typedef std::array<std::vector<uint16_t>, 2>	indexes_t;
 
 class Board
@@ -10,6 +30,10 @@ class Board
 
 		indexes_t	indexes;
 		uint8_t*	board = nullptr;
+
+		bool		within_limits(int start, int index, int direction);
+		int			opposed_direction(int direction);
+		uint8_t		half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &block);
 
 	public:
 
@@ -26,5 +50,6 @@ class Board
 		board_t		get_board();
 		void		generate_indexes(board_t &new_board);
 		void		generate_board(indexes_t &indexes);
+		Sequence	get_stone_sequence(int start, uint8_t player, int direction);
 
 };

@@ -111,7 +111,9 @@ void		GameManager::run_loop()
 					auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
 					if (can_place(stone.index(), player))
 					{
+						printf("sequence before play: %d\n", board.get_stone_sequence(stone.index(), player, -1));
 						play_move(stone.index(), player);
+						printf("sequence after play: %d\n", board.get_stone_sequence(stone.index(), player, -1));
 						printf("Player %s (human) played at position (%d, %d)\n",
 							current_player_color().c_str(), stone.x, stone.y);
 						change_player_turn();
