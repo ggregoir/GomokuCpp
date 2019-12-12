@@ -73,6 +73,22 @@ size_t		GameManager::dumb_algo(board_t grid)
 	return 0;
 }
 
+// DEBUG
+static void	print_sequence(uint8_t sequence)
+{
+	switch (sequence)
+	{
+		case 0: printf("None\n"); break;
+		case 1: printf("BlockedTwo\n"); break;
+		case 2: printf("FreeTwo\n"); break;
+		case 3: printf("BlockedThree\n"); break;
+		case 4: printf("FreeThree\n"); break;
+		case 5: printf("BlockedFour\n"); break;
+		case 6: printf("FreeFour\n"); break;
+		case 7: printf("Five\n"); break;
+	}
+}
+
 void		GameManager::run_loop()
 {
 	UserInterface	ui(params);
@@ -111,11 +127,10 @@ void		GameManager::run_loop()
 					auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
 					if (can_place(stone.index(), player))
 					{
-						printf("sequence before play: %d\n", board.get_stone_sequence(stone.index(), player, -1));
 						play_move(stone.index(), player);
-						printf("sequence after play: %d\n", board.get_stone_sequence(stone.index(), player, -1));
 						printf("Player %s (human) played at position (%d, %d)\n",
 							current_player_color().c_str(), stone.x, stone.y);
+						print_sequence(board.get_stone_sequence(stone.index(), player, -1));
 						change_player_turn();
 					}
 					else

@@ -33,7 +33,9 @@ class Board
 
 		bool		within_limits(int start, int index, int direction);
 		int			opposed_direction(int direction);
-		uint8_t		half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &block);
+		void		half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &block, uint8_t &sum);
+		Sequence	sum_to_sequence(uint8_t sum, bool space, uint8_t blocked);
+		Sequence	stone_sequence(int start, uint8_t player, int direction);
 
 	public:
 

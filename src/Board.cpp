@@ -154,33 +154,52 @@ int			Board::opposed_direction(int direction)
 	return direction;
 }
 
-uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &blocked)
+void		Board::half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &blocked, uint8_t &sum)
 {
-	uint8_t	sum = 0;
 	int		i = direction;
 
 	while (within_limits(start, start + i, direction))
 	{
-		if (board[start + i] == Empty && space == false)
+		if (board[start + i] == Empty)
 		{
-			if (space == false)
+			if (space == false && board[start + i + direction] == player + 1)
 				space = true;
 			else
-				return sum;
+				break;
 		}
 		else if (board[start + i] != player + 1)
 		{
 			blocked += 1;
-			return sum;
+			break;
 		}
 		else
+		{
+			if (sum == 4 && space == true)
+				break;
 			sum += 1;
+		}
 		i += direction;
 	}
-	return sum;
 }
 
-Sequence	Board::get_stone_sequence(int start, uint8_t player, int direction)
+Sequence	Board::sum_to_sequence(uint8_t sum, bool space, uint8_t blocked)
+{
+	if (sum < 2 || blocked > 1)
+		return None;
+	else if (sum == 2 && space == true)
+		return None;
+	else if (sum == 2)
+		return blocked ? BlockedTwo : FreeTwo;
+	else if (sum == 3)
+		return blocked ? BlockedThree : FreeThree;
+	else if (sum == 4)
+		return blocked ? BlockedFour : FreeFour;
+	else if (sum >= 5)
+		return Five;
+	return None;
+}
+
+Sequence	Board::stone_sequence(int start, uint8_t player, int direction)
 {
 	uint8_t	sum = 0;
 	bool	space = false;
@@ -195,18 +214,14 @@ Sequence	Board::get_stone_sequence(int start, uint8_t player, int direction)
 	else
 		sum += 1;
 	
-	sum += half_sequence(start, player, direction, space, blocked);
-	sum += half_sequence(start, player, opposed_direction(direction), space, blocked);
-	
-	if (sum < 2 || blocked > 1)
-		return None;
-	else if (sum == 2)
-		return blocked ? BlockedTwo : FreeTwo;
-	else if (sum == 3)
-		return blocked ? BlockedThree : FreeThree;
-	else if (sum == 4)
-		return blocked ? BlockedFour : FreeFour;
-	else if (sum >= 5)
-		return Five;
-	return None;
+	half_sequence(start, player, direction, space, blocked, sum);
+	half_sequence(start, player, opposed_direction(direction), space, blocked, sum);
+	return sum_to_sequence(sum, space, blocked);
+}
+
+Sequence	Board::get_stone_sequence(int start, uint8_t player, int direction)
+{
+	auto first_sequence = stone_sequence(start, player, direction);
+	auto second_sequence = stone_sequence(start, player, opposed_direction(direction));
+	return std::max(first_sequence, second_sequence);
 }
