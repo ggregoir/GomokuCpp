@@ -154,7 +154,7 @@ int			Board::opposed_direction(int direction)
 	return direction;
 }
 
-void		Board::half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &blocked, uint8_t &sum)
+uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &blocked, uint8_t sum)
 {
 	int		i = direction;
 
@@ -165,21 +165,22 @@ void		Board::half_sequence(int start, uint8_t player, int direction, bool &space
 			if (space == false && board[start + i + direction] == player + 1)
 				space = true;
 			else
-				break;
+				return sum;
 		}
 		else if (board[start + i] != player + 1)
 		{
 			blocked += 1;
-			break;
+			return sum;
 		}
 		else
 		{
 			if (sum == 4 && space == true)
-				break;
+				return sum;
 			sum += 1;
 		}
 		i += direction;
 	}
+	return sum;
 }
 
 Sequence	Board::sum_to_sequence(uint8_t sum, bool space, uint8_t blocked)
@@ -214,8 +215,8 @@ Sequence	Board::stone_sequence(int start, uint8_t player, int direction)
 	else
 		sum += 1;
 	
-	half_sequence(start, player, direction, space, blocked, sum);
-	half_sequence(start, player, opposed_direction(direction), space, blocked, sum);
+	sum = half_sequence(start, player, direction, space, blocked, sum);
+	sum = half_sequence(start, player, opposed_direction(direction), space, blocked, sum);
 	return sum_to_sequence(sum, space, blocked);
 }
 
