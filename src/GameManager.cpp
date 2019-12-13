@@ -41,10 +41,15 @@ void		GameManager::change_player_turn()
 	}
 }
 
-bool		GameManager::can_place(size_t index, uint8_t player)
+bool		GameManager::can_place(size_t index, uint8_t player, Parameters params)
 {
-	(void)player;
+	if (params.rule == Restricted && board.get(index) == Empty)
+		if (board.check_double_freethree(index, player))
+		{
+			return (false);
+		}
 	return board.get(index) == Empty;
+
 }
 
 void		GameManager::play_move(size_t index, uint8_t player)
@@ -125,7 +130,7 @@ void		GameManager::run_loop()
 				if (LEFT_CLICK(event))
 				{
 					auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
-					if (can_place(stone.index(), player))
+					if (can_place(stone.index(), player, params))
 					{
 						play_move(stone.index(), player);
 						printf("Player %s (human) played at position (%d, %d)\n",
@@ -148,7 +153,7 @@ void		GameManager::run_loop()
 				auto stone = INDEX_TO_POS(dumb_algo(board.get_board()));
 				auto end = chrono::system_clock::now();
 				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
-				if (can_place(stone.index(), player))
+				if (can_place(stone.index(), player, params))
 				{
 					play_move(stone.index(), player);
 					printf("Player %s (engine) played at position (%d, %d) in %lld ms\n",

@@ -90,6 +90,41 @@ void		Board::update(board_t new_board)
 	generate_indexes(new_board);
 }
 
+bool	Board::check_double_freethree(int start, uint8_t player)
+{
+	int8_t direction = 0;
+	int i = 0;
+	bool space = true;
+	uint8_t block = 0;
+	int8_t 	dirtab[8] = {Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left, Left};
+
+	if (board == nullptr)
+		generate_board(indexes);
+	//printf("Hello there\n");
+	while(i < 8)
+	{
+		//printf("i: %d\n", i);
+		if (direction == 0 && half_sequence(start, player, dirtab[i], space, block, 0) == FreeTwo)
+		{
+			//printf("1 freetwo\n");
+			direction = dirtab[i];
+		}
+		else if (direction != 0 && half_sequence(start, player, dirtab[i], space, block, 0) == FreeTwo && opposed_direction(dirtab[i]) == direction)
+		{
+			//printf("5 a la suite\n");
+			return(false);
+		}
+		else if (direction != 0 && half_sequence(start, player, dirtab[i], space, block, 0) == FreeTwo && opposed_direction(dirtab[i]) != direction)
+		{
+			//printf("direction: %d opposed_direction: %d\n", direction, opposed_direction(dirtab[i]));
+			//printf("Double_FreeThree\n");
+			return(true);
+		}
+		i++;
+	}
+	return(false);
+}
+
 void		Board::generate_indexes(board_t &new_board)
 {
 	if (indexes[0].size() > 0 || indexes[1].size() > 0)

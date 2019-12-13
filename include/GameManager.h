@@ -42,7 +42,7 @@ class GameManager
 		uint8_t					player_mode;
 
 		void					run_loop();
-		bool					can_place(size_t index, uint8_t player);
+		bool					can_place(size_t index, uint8_t player, Parameters params);
 		void					change_player_turn();
 		std::string				current_player_color();
 		size_t					get_connect4_index(size_t index);

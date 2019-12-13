@@ -44,6 +44,7 @@ class Board
 
 		void		add(size_t index, uint8_t player);
 		uint8_t		get(size_t index);
+		bool		check_double_freethree(int start, uint8_t player);
 		void		remove(size_t index);
 		void		update(board_t new_board);
 		int			is_draw();
