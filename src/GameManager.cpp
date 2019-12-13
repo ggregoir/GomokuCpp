@@ -139,6 +139,11 @@ void		GameManager::run_loop()
 						printf("Player %s (human) played at position (%d, %d)\n",
 							current_player_color().c_str(), stone.x, stone.y);
 						// print_sequence(board.get_stone_sequence(stone.index(), 1 - player, -1));
+						if (board.check_win(stone.index(), player))
+						{
+							printf("Player %s won the game\n", current_player_color().c_str());
+							game_status = player + 1;
+						}
 						change_player_turn();
 					}
 					else
@@ -161,6 +166,11 @@ void		GameManager::run_loop()
 					play_move(stone.index(), player);
 					printf("Player %s (engine) played at position (%d, %d) in %lld ms\n",
 						current_player_color().c_str(), stone.x, stone.y, duration.count());
+					if (board.check_win(stone.index(), player))
+					{
+						printf("Player %s won the game\n", current_player_color().c_str());
+						game_status = player + 1;
+					}
 					change_player_turn();
 				}
 				else

@@ -112,6 +112,20 @@ bool	Board::check_double_freethree(int index, uint8_t player)
 	return false;
 }
 
+bool	Board::check_win(int index, uint8_t player)
+{
+	int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
+
+	if (board == nullptr)
+		generate_board(indexes);
+	for (int i = 0; i < 4; i++)
+	{
+		if (get_stone_sequence(index, player, dirs_win[i]) == Five)
+			return(true);
+	}
+	return false;
+}
+
 void		Board::check_capture(int index, uint8_t player)
 {
 	bool	space = false;
