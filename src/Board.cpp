@@ -31,17 +31,14 @@ uint8_t		Board::get(size_t index)
 	return 0;
 }
 
-void		Board::remove(size_t index)
+void		Board::remove(size_t index, uint8_t player)
 {
-	for (auto & vec : indexes)
+	for (size_t i = 0; i < indexes[player].size(); i++)
 	{
-		for (size_t i = 0; i < vec.size(); i++)
-		{
-			if (vec[i] == index)
-				vec.erase(vec.begin() + i);
-		}
+		if (indexes[player][i] == index)
+			indexes[player].erase(indexes[player].begin() + i);
 	}
-	if (board == nullptr)
+	if (board != nullptr)
 		board[index] = 0;
 }
 
@@ -90,39 +87,48 @@ void		Board::update(board_t new_board)
 	generate_indexes(new_board);
 }
 
-bool	Board::check_double_freethree(int start, uint8_t player)
+static int 	dirs[8] = {Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left, Left};
+
+bool	Board::check_double_freethree(int index, uint8_t player)
 {
-	int8_t direction = 0;
-	int i = 0;
-	bool space = true;
-	uint8_t block = 0;
-	int8_t 	dirtab[8] = {Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left, Left};
+	int		direction = 0;
+	bool	space = false;
+	uint8_t	blocked = 0;
+	uint8_t	sum = 0;
 
 	if (board == nullptr)
 		generate_board(indexes);
-	//printf("Hello there\n");
-	while(i < 8)
+	for (int i = 0; i < 8; i++)
 	{
-		//printf("i: %d\n", i);
-		if (direction == 0 && half_sequence(start, player, dirtab[i], space, block, 0) == FreeTwo)
+		sum = half_sequence(index, player, dirs[i], space, blocked, 0);
+		if (direction == 0)
 		{
-			//printf("1 freetwo\n");
-			direction = dirtab[i];
+			if (sum_to_sequence(sum, space, blocked) == FreeTwo)
+				direction = dirs[i];
 		}
-		else if (direction != 0 && half_sequence(start, player, dirtab[i], space, block, 0) == FreeTwo && opposed_direction(dirtab[i]) == direction)
-		{
-			//printf("5 a la suite\n");
-			return(false);
-		}
-		else if (direction != 0 && half_sequence(start, player, dirtab[i], space, block, 0) == FreeTwo && opposed_direction(dirtab[i]) != direction)
-		{
-			//printf("direction: %d opposed_direction: %d\n", direction, opposed_direction(dirtab[i]));
-			//printf("Double_FreeThree\n");
-			return(true);
-		}
-		i++;
+		else if (sum_to_sequence(sum, space, blocked) == FreeTwo)
+			return opposed_direction(dirs[i]) != direction;
 	}
-	return(false);
+	return false;
+}
+
+void		Board::check_capture(int index, uint8_t player)
+{
+	bool	space = false;
+	uint8_t	blocked = 0;
+	uint8_t	sum = 0;
+
+	if (board == nullptr)
+		generate_board(indexes);
+	for (int i = 0; i < 8; i++)
+	{
+		sum = half_sequence(index, player, dirs[i], space, blocked, 0);
+		if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
+		{
+			remove(index + dirs[i], player);
+			remove(index + dirs[i] + dirs[i], player);
+		}
+	}
 }
 
 void		Board::generate_indexes(board_t &new_board)

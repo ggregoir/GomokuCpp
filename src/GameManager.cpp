@@ -44,17 +44,20 @@ void		GameManager::change_player_turn()
 bool		GameManager::can_place(size_t index, uint8_t player, Parameters params)
 {
 	if (params.rule == Restricted && board.get(index) == Empty)
+	{
 		if (board.check_double_freethree(index, player))
-		{
-			return (false);
-		}
+			return false;
+	}
 	return board.get(index) == Empty;
 
 }
 
 void		GameManager::play_move(size_t index, uint8_t player)
 {
+	if (params.rule == Restricted)
+		board.check_capture(index, 1 - player);
 	board.add(index, player);
+	
 	add_in_history(board.get_board(), index);
 }
 
@@ -135,7 +138,7 @@ void		GameManager::run_loop()
 						play_move(stone.index(), player);
 						printf("Player %s (human) played at position (%d, %d)\n",
 							current_player_color().c_str(), stone.x, stone.y);
-						print_sequence(board.get_stone_sequence(stone.index(), player, -1));
+						// print_sequence(board.get_stone_sequence(stone.index(), 1 - player, -1));
 						change_player_turn();
 					}
 					else
