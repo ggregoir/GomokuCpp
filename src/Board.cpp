@@ -87,7 +87,7 @@ void		Board::update(board_t new_board)
 	generate_indexes(new_board);
 }
 
-static int 	dirs[8] = {Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left, Left};
+static int 	dirs[8] = {Left, Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left};
 
 bool	Board::check_double_freethree(int index, uint8_t player)
 {
@@ -130,14 +130,17 @@ int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 			tmp_dir = opposed_direction(direction);
 			i = tmp_dir;
 		}
-		for (int i_dir = 0; i_dir < 8; i_dir++)
+		for (int i_dir = 0; i_dir < 4; i_dir++)
 		{
-			uint8_t sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, board[start + i] == player + 1);
+			auto op_dir = opposed_direction(dirs[i_dir]);
+			auto sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, board[start + i] == player + 1);
+			auto capture_dir = (blocked > 0) ? op_dir : dirs[i_dir];
+			sum += half_sequence(start + i, player, op_dir, space, blocked, 0);
 			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
 			{
-				auto op_dir = opposed_direction(dirs[i_dir]);
-				if (within_limits(start + i, start + i + op_dir, op_dir) && board[start + i + op_dir] == Empty)
-					return start + i + op_dir;
+				while (board[start + i] != Empty)
+					i += capture_dir;
+				return start + i;
 			}
 			blocked = 0;
 			space = false;
@@ -240,8 +243,12 @@ uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &sp
 	{
 		if (board[start + i] == Empty)
 		{
-			if (space == false && board[start + i + direction] == player + 1)
+			if (space == false &&
+				within_limits(start, start + i + direction, direction) &&
+				board[start + i + direction] == player + 1)
+			{
 				space = true;
+			}
 			else
 				return sum;
 		}
@@ -258,6 +265,7 @@ uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &sp
 		}
 		i += direction;
 	}
+	blocked += 1;
 	return sum;
 }
 
