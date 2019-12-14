@@ -38,6 +38,7 @@ class GameManager
 		std::vector<History>	history;
 		bool					player;
 		uint8_t					player_mode;
+		int						forced_move;
 
 		void					run_loop();
 		bool					can_place(size_t index, uint8_t player, Parameters params);
@@ -47,7 +48,7 @@ class GameManager
 		void					add_in_history(board_t board, int last_move);
 		int						get_last_move();
 		void					load_history();
-		GameStatus				is_endgame(uint32_t index, uint8_t player);
+		GameStatus				is_endgame(int index, uint8_t player);
 		void					print_game_status(GameStatus status);
 
 		// temporary

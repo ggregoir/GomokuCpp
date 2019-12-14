@@ -45,7 +45,6 @@ class Board
 		void		add(size_t index, uint8_t player);
 		uint8_t		get(size_t index);
 		bool		check_double_freethree(int index, uint8_t player);
-		bool		check_win(int index, uint8_t player);
 		void		remove(size_t index, uint8_t player);
 		void		update(board_t new_board);
 		int			is_draw();
@@ -56,5 +55,6 @@ class Board
 		void		generate_board(indexes_t &indexes);
 		Sequence	get_stone_sequence(int start, uint8_t player, int direction);
 		void		check_capture(int index, uint8_t player);
+		int			can_capture_win_sequence(int start, uint8_t player, int direction);
 
 };

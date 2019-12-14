@@ -16,6 +16,7 @@ GameManager::GameManager(Parameters params)
 		player_mode = Human;
 	else
 		player_mode = Engine;
+	forced_move = -1;
 }
 
 GameManager::~GameManager() {}
@@ -92,12 +93,31 @@ void		GameManager::load_history()
 		board.update(history.back().board);
 }
 
-GameStatus	GameManager::is_endgame(uint32_t index, uint8_t player)
+GameStatus		GameManager::is_endgame(int index, uint8_t player)
 {
+	static int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
+
+	if (params.rule == Restricted && forced_move != -1)
+	{
+		if (forced_move != index)
+			return static_cast<GameStatus>((1 - player) + 1);
+		forced_move = -1;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		if (board.get_stone_sequence(index, player, dirs_win[i]) == Five)
+		{
+			if (params.rule == Restricted)
+			{
+				forced_move = board.can_capture_win_sequence(index, player, dirs_win[i]);
+				return forced_move == -1 ? static_cast<GameStatus>(player + 1) : Playing;
+			}
+			else
+				return static_cast<GameStatus>(player + 1);
+		}
+	}
 	if (board.is_draw())
 		return Draw;
-	else if (board.check_win(index, player))
-		return player == 0 ? PlayerOneWin : PlayerTwoWin;
 	return Playing;
 }
 
@@ -118,7 +138,7 @@ void		GameManager::run_loop()
 	bool			quit = false;
 	GameStatus 		game_status = Playing;
 	bool			end_turn = false;
-	Position		stone(0, 0);
+	Position		stone;
 
 	ui.render();
 	while (!quit)

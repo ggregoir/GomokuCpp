@@ -108,22 +108,44 @@ bool	Board::check_double_freethree(int index, uint8_t player)
 		}
 		else if (sum_to_sequence(sum, space, blocked) == FreeTwo)
 			return opposed_direction(dirs[i]) != direction;
+		blocked = 0;
+		space = false;
 	}
 	return false;
 }
 
-bool	Board::check_win(int index, uint8_t player)
+int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 {
-	static int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
+	int		i = 0;
+	int		tmp_dir = direction;
+	bool	space = false;
+	uint8_t	blocked = 0;
 
-	if (board == nullptr)
-		generate_board(indexes);
-	for (int i = 0; i < 4; i++)
+	while (true)
 	{
-		if (get_stone_sequence(index, player, dirs_win[i]) == Five)
-			return(true);
+		if (!within_limits(start, start + i, tmp_dir) || board[start + i] != player + 1)
+		{
+			if (tmp_dir != direction)
+				break;
+			tmp_dir = opposed_direction(direction);
+			i = tmp_dir;
+		}
+		for (int i_dir = 0; i_dir < 8; i_dir++)
+		{
+			uint8_t sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, 1);
+			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
+			{
+				blocked = 0;
+				space = false;
+				if (half_sequence(start + i, 1 - player, opposed_direction(dirs[i_dir]), space, blocked, 0) == 0)
+					return start + i + opposed_direction(dirs[i_dir]);
+			}
+			blocked = 0;
+			space = false;
+		}
+		i += tmp_dir;
 	}
-	return false;
+	return -1;
 }
 
 void		Board::check_capture(int index, uint8_t player)
@@ -142,6 +164,8 @@ void		Board::check_capture(int index, uint8_t player)
 			remove(index + dirs[i], player);
 			remove(index + dirs[i] + dirs[i], player);
 		}
+		blocked = 0;
+		space = false;
 	}
 }
 
