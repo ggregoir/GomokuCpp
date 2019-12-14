@@ -132,13 +132,12 @@ int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 		}
 		for (int i_dir = 0; i_dir < 8; i_dir++)
 		{
-			uint8_t sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, 1);
+			uint8_t sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, board[start + i] == player + 1);
 			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
 			{
-				blocked = 0;
-				space = false;
-				if (half_sequence(start + i, 1 - player, opposed_direction(dirs[i_dir]), space, blocked, 0) == 0)
-					return start + i + opposed_direction(dirs[i_dir]);
+				auto op_dir = opposed_direction(dirs[i_dir]);
+				if (within_limits(start + i, start + i + op_dir, op_dir) && board[start + i + op_dir] == Empty)
+					return start + i + op_dir;
 			}
 			blocked = 0;
 			space = false;
