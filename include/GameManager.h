@@ -14,6 +14,8 @@ enum GameStatus
 	Playing,
 	PlayerOneWin,
 	PlayerTwoWin,
+	PlayerOneWinByCapture,
+	PlayerTwoWinByCapture,
 	Draw
 };
 
@@ -21,6 +23,7 @@ struct History
 {
 	board_t	board;
 	int		last_move;
+	std::array<uint8_t, 2>	capture;
 };
 
 class GameManager
@@ -45,7 +48,7 @@ class GameManager
 		void					change_player_turn();
 		size_t					get_connect4_index(size_t index);
 		void					play_move(size_t index, uint8_t player);
-		void					add_in_history(board_t board, int last_move);
+		void					add_in_history(board_t board, int last_move, std::array<uint8_t, 2> capture);
 		int						get_last_move();
 		void					load_history();
 		GameStatus				is_endgame(int index, uint8_t player);

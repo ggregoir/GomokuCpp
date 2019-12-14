@@ -3,7 +3,11 @@
 
 using namespace std;
 
-Board::Board() {}
+Board::Board()
+{
+	capture[0] = 0;
+	capture[1] = 0;
+}
 
 Board::~Board()
 {
@@ -165,6 +169,7 @@ void		Board::check_capture(int index, uint8_t player)
 		{
 			remove(index + dirs[i], player);
 			remove(index + dirs[i] + dirs[i], player);
+			capture[1 - player] += 1;
 		}
 		blocked = 0;
 		space = false;

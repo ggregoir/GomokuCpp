@@ -39,6 +39,8 @@ class Board
 
 	public:
 
+		std::array<uint8_t, 2>	capture;
+
 		Board();
 		~Board();
 

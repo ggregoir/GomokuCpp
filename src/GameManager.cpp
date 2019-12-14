@@ -54,12 +54,12 @@ void		GameManager::play_move(size_t index, uint8_t player)
 		board.check_capture(index, 1 - player);
 	board.add(index, player);
 	
-	add_in_history(board.get_board(), index);
+	add_in_history(board.get_board(), index, board.capture);
 }
 
-void		GameManager::add_in_history(board_t board, int last_move)
+void		GameManager::add_in_history(board_t board, int last_move, array<uint8_t, 2> capture)
 {
-	history.push_back(History { board, last_move });
+	history.push_back(History { board, last_move, capture });
 }
 
 int			GameManager::get_last_move()
@@ -90,18 +90,28 @@ void		GameManager::load_history()
 		board.update(new_board);
 	}
 	else
+	{
 		board.update(history.back().board);
+		auto capture = history.back().capture;
+		board.capture[0] = capture[0];
+		board.capture[1] = capture[1];
+	}
 }
 
 GameStatus		GameManager::is_endgame(int index, uint8_t player)
 {
 	static int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
 
-	if (params.rule == Restricted && forced_move != -1)
+	if (params.rule == Restricted)
 	{
-		if (forced_move != index)
-			return static_cast<GameStatus>((1 - player) + 1);
-		forced_move = -1;
+		if (board.capture[player] >= 5)
+			return static_cast<GameStatus>(player + 3);
+		else if (forced_move != -1)
+		{
+			if (forced_move != index)
+				return static_cast<GameStatus>((1 - player) + 1);
+			forced_move = -1;
+		}
 	}
 	for (int i = 0; i < 4; i++)
 	{
@@ -125,10 +135,15 @@ void		GameManager::print_game_status(GameStatus status)
 {
 	if (status == Draw)
 		printf("Draw !\n");
+	else if (status < PlayerOneWinByCapture)
+	{
+		printf("Player %d won the game by lining up 5 stones !\n", status);
+	}
 	else
 	{
-		printf("Player %d won the game !\n", status);
+		printf("Player %d won the game by capturing 10 enemy stones !\n", status - 2);
 	}
+	
 }
 
 void		GameManager::run_loop()
