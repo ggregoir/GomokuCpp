@@ -209,13 +209,13 @@ bool		Board::within_limits(int start, int index, int direction)
 	else if (direction == Down)
 		return index < BOARD_CAPACITY;
 	else if (direction == Up + Left)
-		return (index >= 0) && (start % BOARD_SIZE > index % BOARD_SIZE);
+		return (index >= 0) && (start % BOARD_SIZE >= index % BOARD_SIZE);
 	else if (direction == Down + Right)
-		return (index < BOARD_CAPACITY) && (start % BOARD_SIZE < index % BOARD_SIZE);
+		return (index < BOARD_CAPACITY) && (start % BOARD_SIZE <= index % BOARD_SIZE);
 	else if (direction == Up + Right)
-		return (index >= 0) && (start % BOARD_SIZE < index % BOARD_SIZE);
+		return (index >= 0) && (start % BOARD_SIZE <= index % BOARD_SIZE);
 	else if (direction == Down + Left)
-		return (index < BOARD_CAPACITY) && (start % BOARD_SIZE > index % BOARD_SIZE);
+		return (index < BOARD_CAPACITY) && (start % BOARD_SIZE >= index % BOARD_SIZE);
 	return false;
 }
 
