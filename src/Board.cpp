@@ -114,7 +114,7 @@ bool	Board::check_double_freethree(int index, uint8_t player)
 
 bool	Board::check_win(int index, uint8_t player)
 {
-	int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
+	static int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
 
 	if (board == nullptr)
 		generate_board(indexes);

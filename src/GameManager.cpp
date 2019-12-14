@@ -27,11 +27,6 @@ size_t		GameManager::get_connect4_index(size_t index)
 	return index;
 }
 
-string		GameManager::current_player_color()
-{
-	return player ? "white" : "black";
-}
-
 void		GameManager::change_player_turn()
 {
 	player = !player;
@@ -81,19 +76,38 @@ size_t		GameManager::dumb_algo(board_t grid)
 	return 0;
 }
 
-// DEBUG
-static void	print_sequence(uint8_t sequence)
+void		GameManager::load_history()
 {
-	switch (sequence)
+	if (history.size() > 0)
+		history.pop_back();
+	if (history.size() > 0)
+		history.pop_back();
+	if (history.size() == 0)
 	{
-		case 0: printf("None\n"); break;
-		case 1: printf("BlockedTwo\n"); break;
-		case 2: printf("FreeTwo\n"); break;
-		case 3: printf("BlockedThree\n"); break;
-		case 4: printf("FreeThree\n"); break;
-		case 5: printf("BlockedFour\n"); break;
-		case 6: printf("FreeFour\n"); break;
-		case 7: printf("Five\n"); break;
+		board_t	new_board;
+		std::fill(new_board.begin(), new_board.end(), 0);
+		board.update(new_board);
+	}
+	else
+		board.update(history.back().board);
+}
+
+GameStatus	GameManager::is_endgame(uint32_t index, uint8_t player)
+{
+	if (board.is_draw())
+		return Draw;
+	else if (board.check_win(index, player))
+		return player == 0 ? PlayerOneWin : PlayerTwoWin;
+	return Playing;
+}
+
+void		GameManager::print_game_status(GameStatus status)
+{
+	if (status == Draw)
+		printf("Draw !\n");
+	else
+	{
+		printf("Player %d won the game !\n", status);
 	}
 }
 
@@ -102,7 +116,9 @@ void		GameManager::run_loop()
 	UserInterface	ui(params);
 	SDL_Event		event;
 	bool			quit = false;
-	uint8_t 		game_status = 0;
+	GameStatus 		game_status = Playing;
+	bool			end_turn = false;
+	Position		stone(0, 0);
 
 	ui.render();
 	while (!quit)
@@ -115,42 +131,22 @@ void		GameManager::run_loop()
 				SDL_WaitEvent(&event);
 				if (UNDO_EVENT(event))
 				{
-					if (history.size() > 0)
-						history.pop_back();
-					if (history.size() > 0)
-						history.pop_back();
-					if (history.size() == 0)
-					{
-						board_t	new_board;
-						std::fill(new_board.begin(), new_board.end(), 0);
-						board.update(new_board);
-					}
-					else
-						board.update(history.back().board);
+					load_history();
 					ui.print_board(board.get_board(), get_last_move());
-					ui.render();
 				}
 				if (LEFT_CLICK(event))
 				{
-					auto stone = ui.get_user_input(Position(event.button.x, event.button.y));
+					stone = ui.get_user_input(Position(event.button.x, event.button.y));
 					if (can_place(stone.index(), player, params))
 					{
 						play_move(stone.index(), player);
-						printf("Player %s (human) played at position (%d, %d)\n",
-							current_player_color().c_str(), stone.x, stone.y);
-						// print_sequence(board.get_stone_sequence(stone.index(), 1 - player, -1));
-						if (board.check_win(stone.index(), player))
-						{
-							printf("Player %s won the game\n", current_player_color().c_str());
-							game_status = player + 1;
-						}
-						change_player_turn();
+						printf("Player %d (human) played at position (%d, %d)\n", player + 1, stone.x, stone.y);
+						end_turn = true;
 					}
 					else
 						printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
 
 					ui.print_board(board.get_board(), get_last_move());
-					ui.render();
 				}
 			}
 			else
@@ -158,36 +154,33 @@ void		GameManager::run_loop()
 				SDL_PollEvent(&event);
 				auto start = chrono::system_clock::now();
 				// Run negamax here
-				auto stone = INDEX_TO_POS(dumb_algo(board.get_board()));
+				stone = INDEX_TO_POS(dumb_algo(board.get_board()));
 				auto end = chrono::system_clock::now();
 				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
 				if (can_place(stone.index(), player, params))
 				{
 					play_move(stone.index(), player);
-					printf("Player %s (engine) played at position (%d, %d) in %lld ms\n",
-						current_player_color().c_str(), stone.x, stone.y, duration.count());
-					if (board.check_win(stone.index(), player))
-					{
-						printf("Player %s won the game\n", current_player_color().c_str());
-						game_status = player + 1;
-					}
-					change_player_turn();
+					printf("Player %d (engine) played at position (%d, %d) in %lld ms\n",
+						player + 1, stone.x, stone.y, duration.count());
+					end_turn = true;
 				}
 				else
 					printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
 
 				ui.print_board(board.get_board(), get_last_move());
-				ui.render();
 			}
-			if (board.is_draw())
+			
+			if (end_turn == true)
 			{
-				printf("C'est un draw.\n");
-				game_status = Draw;
+				if ((game_status = is_endgame(stone.index(), player)))
+					print_game_status(game_status);
+				change_player_turn();
+				end_turn = false;
 			}
+			
 			if (CLOSE_EVENT(event))
 			{
 				quit = true;
-				printf("End of the game.\n");
 				break;
 			}
 		}

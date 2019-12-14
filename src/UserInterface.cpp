@@ -90,6 +90,7 @@ void		UserInterface::print_board(board_t board, int last_move)
 	}
 	if (last_move >= 0)
 		place_stone(4, INDEX_TO_POS(last_move));
+	render();
 }
 
 void		UserInterface::place_stone(uint8_t color, Position stone)

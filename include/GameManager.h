@@ -3,8 +3,6 @@
 #include "Board.h"
 #include "Parameters.h"
 
-#include <string>
-
 enum PlayerMode
 {
 	Engine,
@@ -44,11 +42,13 @@ class GameManager
 		void					run_loop();
 		bool					can_place(size_t index, uint8_t player, Parameters params);
 		void					change_player_turn();
-		std::string				current_player_color();
 		size_t					get_connect4_index(size_t index);
 		void					play_move(size_t index, uint8_t player);
 		void					add_in_history(board_t board, int last_move);
 		int						get_last_move();
+		void					load_history();
+		GameStatus				is_endgame(uint32_t index, uint8_t player);
+		void					print_game_status(GameStatus status);
 
 		// temporary
 		size_t					dumb_algo(board_t grid);
