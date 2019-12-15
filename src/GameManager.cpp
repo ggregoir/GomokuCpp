@@ -16,7 +16,7 @@ GameManager::GameManager(Parameters params)
 		player_mode = Human;
 	else
 		player_mode = Engine;
-	forced_move = -1;
+	forced_capture = false;
 }
 
 GameManager::~GameManager() {}
@@ -104,15 +104,10 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 
 	if (params.rule == Restricted)
 	{
-		printf("capture score: black = %d, white = %d\n", board.capture[0], board.capture[0]);
 		if (board.capture[player] >= 5)
 			return static_cast<GameStatus>(player + 3);
-		else if (forced_move != -1)
-		{
-			if (forced_move != index)
+		else if (forced_capture)
 				return static_cast<GameStatus>((1 - player) + 1);
-			forced_move = -1;
-		}
 	}
 	for (int i = 0; i < 4; i++)
 	{
@@ -121,8 +116,8 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 			printf("five stone found for player %d\n", player + 1);
 			if (params.rule == Restricted)
 			{
-				forced_move = board.can_capture_win_sequence(index, player, dirs_win[i]);
-				return forced_move == -1 ? static_cast<GameStatus>(player + 1) : Playing;
+				forced_capture = board.can_capture_win_sequence(index, player, dirs_win[i]);
+				return forced_capture == false ? static_cast<GameStatus>(player + 1) : Playing;
 			}
 			else
 				return static_cast<GameStatus>(player + 1);

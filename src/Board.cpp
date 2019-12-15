@@ -134,7 +134,7 @@ static void	print_sequence(uint8_t sequence)
 	}
 }
 
-int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
+bool		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 {
 	int		i = 0;
 	int		tmp_dir = direction;
@@ -154,16 +154,10 @@ int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 		{
 			auto op_dir = opposed_direction(dirs[i_dir]);
 			auto sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, board[start + i] == player + 1);
-			auto capture_dir = (blocked > 0) ? op_dir : dirs[i_dir];
 			sum += half_sequence(start + i, player, op_dir, space, blocked, 0);
 			print_sequence(sum_to_sequence(sum, space, blocked));
 			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
-			{
-				while (board[start + i] != Empty)
-					i += capture_dir;
-				printf("forced move: %d %d\n", (start + i) / BOARD_SIZE, (start + i) % BOARD_SIZE);
-				return start + i;
-			}
+				return (capture[1 - player] >= 4) ? true : false;
 			blocked = 0;
 			space = false;
 		}
@@ -171,7 +165,7 @@ int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 		i += tmp_dir;
 	}
 	printf("capture not found\n");
-	return -1;
+	return false;
 }
 
 void		Board::check_capture(int index, uint8_t player)

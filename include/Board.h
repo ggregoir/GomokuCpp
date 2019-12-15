@@ -57,6 +57,6 @@ class Board
 		void		generate_board(indexes_t &indexes);
 		Sequence	get_stone_sequence(int start, uint8_t player, int direction);
 		void		check_capture(int index, uint8_t player);
-		int			can_capture_win_sequence(int start, uint8_t player, int direction);
+		bool		can_capture_win_sequence(int start, uint8_t player, int direction);
 
 };
