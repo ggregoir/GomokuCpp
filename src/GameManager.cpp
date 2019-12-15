@@ -113,7 +113,6 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 	{
 		if (board.get_stone_sequence(index, player, dirs_win[i]) == Five)
 		{
-			printf("five stone found for player %d\n", player + 1);
 			if (params.rule == Restricted)
 			{
 				forced_capture = board.can_capture_win_sequence(index, player, dirs_win[i]);
