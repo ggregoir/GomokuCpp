@@ -118,6 +118,22 @@ bool	Board::check_double_freethree(int index, uint8_t player)
 	return false;
 }
 
+// DEBUG
+static void	print_sequence(uint8_t sequence)
+{
+	switch (sequence)
+	{
+		case 0: printf("None\n"); break;
+		case 1: printf("BlockedTwo\n"); break;
+		case 2: printf("FreeTwo\n"); break;
+		case 3: printf("BlockedThree\n"); break;
+		case 4: printf("FreeThree\n"); break;
+		case 5: printf("BlockedFour\n"); break;
+		case 6: printf("FreeFour\n"); break;
+		case 7: printf("Five\n"); break;
+	}
+}
+
 int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 {
 	int		i = 0;
@@ -140,17 +156,21 @@ int		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 			auto sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, board[start + i] == player + 1);
 			auto capture_dir = (blocked > 0) ? op_dir : dirs[i_dir];
 			sum += half_sequence(start + i, player, op_dir, space, blocked, 0);
+			print_sequence(sum_to_sequence(sum, space, blocked));
 			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
 			{
 				while (board[start + i] != Empty)
 					i += capture_dir;
+				printf("forced move: %d %d\n", (start + i) / BOARD_SIZE, (start + i) % BOARD_SIZE);
 				return start + i;
 			}
 			blocked = 0;
 			space = false;
 		}
+		printf("next stone\n");
 		i += tmp_dir;
 	}
+	printf("capture not found\n");
 	return -1;
 }
 
@@ -270,7 +290,6 @@ uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &sp
 		}
 		i += direction;
 	}
-	blocked += 1;
 	return sum;
 }
 

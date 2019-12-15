@@ -104,6 +104,7 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 
 	if (params.rule == Restricted)
 	{
+		printf("capture score: black = %d, white = %d\n", board.capture[0], board.capture[0]);
 		if (board.capture[player] >= 5)
 			return static_cast<GameStatus>(player + 3);
 		else if (forced_move != -1)
@@ -117,6 +118,7 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 	{
 		if (board.get_stone_sequence(index, player, dirs_win[i]) == Five)
 		{
+			printf("five stone found for player %d\n", player + 1);
 			if (params.rule == Restricted)
 			{
 				forced_move = board.can_capture_win_sequence(index, player, dirs_win[i]);
