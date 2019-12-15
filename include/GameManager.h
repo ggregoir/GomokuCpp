@@ -41,7 +41,6 @@ class GameManager
 		std::vector<History>	history;
 		bool					player;
 		uint8_t					player_mode;
-		bool					forced_capture;
 
 		void					run_loop();
 		bool					can_place(size_t index, uint8_t player, Parameters params);

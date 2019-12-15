@@ -16,7 +16,6 @@ GameManager::GameManager(Parameters params)
 		player_mode = Human;
 	else
 		player_mode = Engine;
-	forced_capture = false;
 }
 
 GameManager::~GameManager() {}
@@ -106,8 +105,6 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 	{
 		if (board.capture[player] >= 5)
 			return static_cast<GameStatus>(player + 3);
-		else if (forced_capture)
-				return static_cast<GameStatus>((1 - player) + 1);
 	}
 	for (int i = 0; i < 4; i++)
 	{
@@ -115,8 +112,10 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 		{
 			if (params.rule == Restricted)
 			{
-				forced_capture = board.can_capture_win_sequence(index, player, dirs_win[i]);
-				return forced_capture == false ? static_cast<GameStatus>(player + 1) : Playing;
+				if (board.can_capture_win_sequence(index, player, dirs_win[i]))
+					return Playing;
+				else
+					return static_cast<GameStatus>(player + 1);
 			}
 			else
 				return static_cast<GameStatus>(player + 1);
