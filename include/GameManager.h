@@ -1,16 +1,29 @@
 #pragma once
 
-#include "macros.h"
+#include "Board.h"
+#include "Parameters.h"
 
-#include <tuple>
-#include <vector>
-#include <array>
-
-enum Stone
+enum PlayerMode
 {
-	Empty,
-	Black,
-	White
+	Engine,
+	Human
+};
+
+enum GameStatus
+{
+	Playing,
+	PlayerOneWin,
+	PlayerTwoWin,
+	PlayerOneWinByCapture,
+	PlayerTwoWinByCapture,
+	Draw
+};
+
+struct History
+{
+	board_t						board;
+	int							last_move;
+	std::array<uint8_t, 2>		capture;
 };
 
 class GameManager
@@ -20,18 +33,26 @@ class GameManager
 	/* data */
 
 	public:
-		GameManager(Parameters &params);
+		GameManager(Parameters params);
 		~GameManager();
 
-		Board		board;
-		history_t	history;
-		bool		turn;
-		bool		player;
+		Parameters				params;
+		Board					board;
+		std::vector<History>	history;
+		bool					player;
+		uint8_t					player_mode;
 
-		bool		modify_board(uint32_t new_index, uint8_t color);
-		uint32_t	get_last_move();
-		Board		get_board();
-		void		change_turn();
-		void		change_player(Parameters &params);
-		uint8_t		get_turn_color();
+		void					run_loop();
+		bool					can_place(size_t index, uint8_t player, Parameters params);
+		void					change_player_turn();
+		size_t					get_connect4_index(size_t index);
+		void					play_move(size_t index, uint8_t player);
+		void					add_in_history(board_t cells, int last_move, std::array<uint8_t, 2> capture);
+		int						get_last_move();
+		void					load_history();
+		GameStatus				is_endgame(int index, uint8_t player);
+		void					print_game_status(GameStatus status);
+
+		// temporary
+		size_t					dumb_algo(board_t grid);
 };

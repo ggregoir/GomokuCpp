@@ -23,13 +23,13 @@ class Menu
 		~Menu(void);
 
 		void			loop(Parameters &params);
+		void			clear();
 
 	private:
-		const SubMenu	tree[15];
+		const SubMenu	tree[17];
 		
 		int				getInput(int max_index);
 		void			displayMenu(int index, Parameters &params);
-		void			clear();
 		void			goodGame();
 
 };

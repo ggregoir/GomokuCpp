@@ -12,7 +12,13 @@
 							event.button.button == SDL_BUTTON_LEFT && \
 							event.button.windowID == 1)
 
+#define CLOSE_EVENT(event) ((event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) || event.type == SDL_QUIT)
+
+#define UNDO_EVENT(event) ((event.key.keysym.sym == 8 && event.type == SDL_KEYDOWN))
+#define RATIO 0.4
+
 class Parameters;
+class Board;
 
 class UserInterface
 {
@@ -20,13 +26,13 @@ class UserInterface
 public:
 
 	UserInterface(Parameters params);
-	~UserInterface(void);
 
-	Position	pixel_to_pos(Position mouse);
-	void		place_stone(uint8_t color, Position stone);
-	void		print_board(board_t board, uint32_t last_move);
-	void		render();
-	void		clear();
+	Position		get_user_input(Position mouse);
+	void			place_stone(uint8_t player, Position stone);
+	void			print_board(board_t board, int last_move);
+	void			render();
+	void			clear();
+	void			FreeSDL();
 
 private:
 
@@ -38,8 +44,6 @@ private:
 	SDL_Texture*	board_text;
 	SDL_Texture*	last_played_text;
 
-	const int		board_x[BOARD_SIZE];
-	const int		board_y[BOARD_SIZE];
-	std::string		theme[2];
+	std::string		theme[3];
 
 };
