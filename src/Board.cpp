@@ -7,32 +7,20 @@ Board::Board()
 {
 	capture[0] = 0;
 	capture[1] = 0;
+	clear_cells();
 }
 
-Board::~Board()
-{
-	if (board != nullptr)
-		delete []board;
-}
+Board::~Board() {}
 
 void		Board::add(size_t index, uint8_t player)
 {
-	if (board != nullptr)
-		board[index] = player + 1;
+	cells[index] = player + 1;
 	indexes[player].push_back(index);
 }
 
 uint8_t		Board::get(size_t index)
 {
-	for (uint8_t player = 0; player < 2; player++)
-	{
-		for (size_t i = 0; i < indexes[player].size(); i++)
-		{
-			if (indexes[player][i] == index)
-				return player + 1;
-		}
-	}
-	return 0;
+	return cells[index];
 }
 
 void		Board::remove(size_t index, uint8_t player)
@@ -42,17 +30,12 @@ void		Board::remove(size_t index, uint8_t player)
 		if (indexes[player][i] == index)
 			indexes[player].erase(indexes[player].begin() + i);
 	}
-	if (board != nullptr)
-		board[index] = 0;
+	cells[index] = 0;
 }
 
-void		Board::clear_board()
+void		Board::clear_cells()
 {
-	if (board != nullptr)
-	{
-		delete []board;
-		board = nullptr;
-	}
+	std::fill(cells.begin(), cells.end(), 0);
 }
 
 void		Board::clear_indexes()
@@ -61,33 +44,17 @@ void		Board::clear_indexes()
 	indexes[1].clear();
 }
 
-int			Board::is_draw()
+bool		Board::is_draw()
 {
 	int total = 0;
 	total = indexes[0].size();
 	total += indexes[1].size();
-	if (total == 361)
-		return(1);
-	else
-		return(0);
-}
-
-board_t		Board::get_board()
-{
-	board_t	new_board;
-
-	if (board == nullptr)
-		generate_board(indexes);
-	std::copy(board, board + BOARD_CAPACITY, new_board.begin());
-	return new_board;
+	return (total == BOARD_CAPACITY) ? true : false;
 }
 
 void		Board::update(board_t new_board)
 {
-	clear_board();
-	clear_indexes();
-	board = new uint8_t[BOARD_CAPACITY];
-	std::copy(new_board.begin(), new_board.end(), board);
+	cells = new_board;
 	generate_indexes(new_board);
 }
 
@@ -100,8 +67,6 @@ bool	Board::check_double_freethree(int index, uint8_t player)
 	uint8_t	blocked = 0;
 	uint8_t	sum = 0;
 
-	if (board == nullptr)
-		generate_board(indexes);
 	for (int i = 0; i < 8; i++)
 	{
 		sum = half_sequence(index, player, dirs[i], space, blocked, 0);
@@ -128,7 +93,7 @@ bool		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 
 	while (true)
 	{
-		if (!within_limits(start, start + i, tmp_dir) || board[start + i] != player + 1)
+		if (!within_limits(start, start + i, tmp_dir) || cells[start + i] != player + 1)
 		{
 			if (tmp_dir != direction)
 				break;
@@ -138,7 +103,7 @@ bool		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
 		for (int i_dir = 0; i_dir < 4; i_dir++)
 		{
 			auto op_dir = opposed_direction(dirs[i_dir]);
-			auto sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, board[start + i] == player + 1);
+			auto sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, cells[start + i] == player + 1);
 			sum += half_sequence(start + i, player, op_dir, space, blocked, 0);
 			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
 				capture_count += 1;
@@ -156,8 +121,6 @@ void		Board::check_capture(int index, uint8_t player)
 	uint8_t	blocked = 0;
 	uint8_t	sum = 0;
 
-	if (board == nullptr)
-		generate_board(indexes);
 	for (int i = 0; i < 8; i++)
 	{
 		sum = half_sequence(index, player, dirs[i], space, blocked, 0);
@@ -180,19 +143,6 @@ void		Board::generate_indexes(board_t &new_board)
 	{
 		if (new_board[i] > 0)
 			indexes[new_board[i] - 1].push_back(i);
-	}
-}
-
-void		Board::generate_board(indexes_t &indexes)
-{
-	if (board != nullptr)
-		clear_board();
-	board = new uint8_t[BOARD_CAPACITY];
-	std::fill(board, board + BOARD_CAPACITY, 0);
-	for (uint8_t player = 0; player < 2; player++)
-	{
-		for (size_t i = 0; i < indexes[player].size(); i++)
-			board[indexes[player][i]] = player + 1;
 	}
 }
 
@@ -242,18 +192,18 @@ uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &sp
 
 	while (within_limits(start, start + i, direction))
 	{
-		if (board[start + i] == Empty)
+		if (cells[start + i] == Empty)
 		{
 			if (space == false &&
 				within_limits(start, start + i + direction, direction) &&
-				board[start + i + direction] == player + 1)
+				cells[start + i + direction] == player + 1)
 			{
 				space = true;
 			}
 			else
 				return sum;
 		}
-		else if (board[start + i] != player + 1)
+		else if (cells[start + i] != player + 1)
 		{
 			blocked += 1;
 			return sum;
@@ -292,11 +242,9 @@ Sequence	Board::stone_sequence(int start, uint8_t player, int direction)
 	bool	space = false;
 	uint8_t	blocked = 0;
 
-	if (board == nullptr)
-		generate_board(indexes);
-	if (board[start] == Empty)
+	if (cells[start] == Empty)
 		space = true;
-	else if (board[start] != player + 1)
+	else if (cells[start] != player + 1)
 		return None;
 	else
 		sum += 1;

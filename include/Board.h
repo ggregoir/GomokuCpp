@@ -29,7 +29,6 @@ class Board
 	private:
 
 		indexes_t	indexes;
-		uint8_t*	board = nullptr;
 
 		bool		within_limits(int start, int index, int direction);
 		int			opposed_direction(int direction);
@@ -39,6 +38,7 @@ class Board
 
 	public:
 
+		board_t					cells;
 		std::array<uint8_t, 2>	capture;
 
 		Board();
@@ -49,12 +49,11 @@ class Board
 		bool		check_double_freethree(int index, uint8_t player);
 		void		remove(size_t index, uint8_t player);
 		void		update(board_t new_board);
-		int			is_draw();
-		void		clear_board();
+		bool		is_draw();
+		void		clear_cells();
 		void		clear_indexes();
 		board_t		get_board();
 		void		generate_indexes(board_t &new_board);
-		void		generate_board(indexes_t &indexes);
 		Sequence	get_stone_sequence(int start, uint8_t player, int direction);
 		void		check_capture(int index, uint8_t player);
 		bool		can_capture_win_sequence(int start, uint8_t player, int direction);

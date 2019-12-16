@@ -31,9 +31,7 @@ void		GameManager::change_player_turn()
 {
 	player = !player;
 	if (params.mode != PlayerVsPlayer && params.mode != EngineVsEngine)
-	{
 		player_mode = 1 - player_mode;
-	}
 }
 
 bool		GameManager::can_place(size_t index, uint8_t player, Parameters params)
@@ -53,7 +51,7 @@ void		GameManager::play_move(size_t index, uint8_t player)
 		board.check_capture(index, 1 - player);
 	board.add(index, player);
 	
-	add_in_history(board.get_board(), index, board.capture);
+	add_in_history(board.cells, index, board.capture);
 }
 
 void		GameManager::add_in_history(board_t board, int last_move, array<uint8_t, 2> capture)
@@ -84,9 +82,8 @@ void		GameManager::load_history()
 		history.pop_back();
 	if (history.size() == 0)
 	{
-		board_t	new_board;
-		std::fill(new_board.begin(), new_board.end(), 0);
-		board.update(new_board);
+		board.clear_cells();
+		board.clear_indexes();
 	}
 	else
 	{
@@ -121,7 +118,7 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 				return static_cast<GameStatus>(player + 1);
 		}
 	}
-	if (board.is_draw())
+	if (board.is_draw() == true)
 		return Draw;
 	return Playing;
 }
@@ -131,13 +128,9 @@ void		GameManager::print_game_status(GameStatus status)
 	if (status == Draw)
 		printf("Draw !\n");
 	else if (status < PlayerOneWinByCapture)
-	{
 		printf("Player %d won the game by lining up 5 stones !\n", status);
-	}
 	else
-	{
 		printf("Player %d won the game by capturing 10 enemy stones !\n", status - 2);
-	}
 	
 }
 
@@ -162,7 +155,7 @@ void		GameManager::run_loop()
 				if (UNDO_EVENT(event))
 				{
 					load_history();
-					ui.print_board(board.get_board(), get_last_move());
+					ui.print_board(board.cells, get_last_move());
 				}
 				if (LEFT_CLICK(event))
 				{
@@ -176,7 +169,7 @@ void		GameManager::run_loop()
 					else
 						printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
 
-					ui.print_board(board.get_board(), get_last_move());
+					ui.print_board(board.cells, get_last_move());
 				}
 			}
 			else
@@ -184,7 +177,7 @@ void		GameManager::run_loop()
 				SDL_PollEvent(&event);
 				auto start = chrono::system_clock::now();
 				// Run negamax here
-				stone = INDEX_TO_POS(dumb_algo(board.get_board()));
+				stone = INDEX_TO_POS(dumb_algo(board.cells));
 				auto end = chrono::system_clock::now();
 				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
 				if (can_place(stone.index(), player, params))
@@ -197,7 +190,7 @@ void		GameManager::run_loop()
 				else
 					printf("Warning - cannot add a stone at position (%d, %d)\n", stone.x, stone.y);
 
-				ui.print_board(board.get_board(), get_last_move());
+				ui.print_board(board.cells, get_last_move());
 			}
 			
 			if (end_turn == true)
