@@ -64,6 +64,7 @@ class Board
 		bool				can_capture_win_sequence(int start, uint8_t player, int direction);
 		Sequence			get_sequence(int start, uint8_t player, int direction);
 		Sequence			get_best_sequence(int start, uint8_t player, int direction);
+		bool				can_capture(int start, uint8_t player, int direction);
 
 		// int					evaluate();
 		// std::vector<Board>	generate_sorted_children();
