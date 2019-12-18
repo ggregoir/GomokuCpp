@@ -38,7 +38,7 @@ bool		GameManager::can_place(size_t index, uint8_t player, Parameters params)
 {
 	if (params.rule == Restricted && board.get(index) == Empty)
 	{
-		if (board.check_double_freethree(index, player))
+		if (board.is_double_freethree(index, player))
 			return false;
 	}
 	return board.get(index) == Empty;
@@ -48,7 +48,7 @@ bool		GameManager::can_place(size_t index, uint8_t player, Parameters params)
 void		GameManager::play_move(size_t index, uint8_t player)
 {
 	if (params.rule == Restricted)
-		board.check_capture(index, 1 - player);
+		board.capture_if_possible(index, 1 - player);
 	board.add(index, player);
 	
 	add_in_history(board.cells, index, board.capture);
@@ -105,7 +105,8 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		if (board.get_stone_sequence(index, player, dirs_win[i]) == Five)
+		auto sequence = board.get_sequence(index, player, dirs_win[i]);
+		if (sequence.type == Five)
 		{
 			if (params.rule == Restricted)
 			{

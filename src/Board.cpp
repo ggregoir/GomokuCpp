@@ -3,6 +3,21 @@
 
 using namespace std;
 
+static int 	dirs[8] = {Left, Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left};
+
+// static int	scoring_table[9] =
+// {
+// 	0,		// None
+// 	-30,	// BlockedTwo
+// 	10,		// FreeTwo
+// 	15,		// BlockedThree,
+// 	50,		// BlockedFour
+// 	75,		// FreeThree
+// 	150,	// FreeFour
+// 	160,	// Five
+// 	30,		// Capture
+// };
+
 Board::Board()
 {
 	capture[0] = 0;
@@ -11,6 +26,11 @@ Board::Board()
 }
 
 Board::~Board() {}
+
+Board			Board::clone()
+{
+	return *this;
+}
 
 void		Board::add(size_t index, uint8_t player)
 {
@@ -44,97 +64,6 @@ void		Board::clear_indexes()
 	indexes[1].clear();
 }
 
-bool		Board::is_draw()
-{
-	int total = 0;
-	total = indexes[0].size();
-	total += indexes[1].size();
-	return (total == BOARD_CAPACITY) ? true : false;
-}
-
-void		Board::update(board_t new_board)
-{
-	cells = new_board;
-	generate_indexes(new_board);
-}
-
-static int 	dirs[8] = {Left, Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left};
-
-bool	Board::check_double_freethree(int index, uint8_t player)
-{
-	int		direction = 0;
-	bool	space = false;
-	uint8_t	blocked = 0;
-	uint8_t	sum = 0;
-
-	for (int i = 0; i < 8; i++)
-	{
-		sum = half_sequence(index, player, dirs[i], space, blocked, 0);
-		if (direction == 0)
-		{
-			if (sum_to_sequence(sum, space, blocked) == FreeTwo)
-				direction = dirs[i];
-		}
-		else if (sum_to_sequence(sum, space, blocked) == FreeTwo)
-			return opposed_direction(dirs[i]) != direction;
-		blocked = 0;
-		space = false;
-	}
-	return false;
-}
-
-bool		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
-{
-	int		i = 0;
-	int		tmp_dir = direction;
-	bool	space = false;
-	uint8_t	blocked = 0;
-	uint8_t	capture_count = 0;
-
-	while (true)
-	{
-		if (!within_limits(start, start + i, tmp_dir) || cells[start + i] != player + 1)
-		{
-			if (tmp_dir != direction)
-				break;
-			tmp_dir = opposed_direction(direction);
-			i = tmp_dir;
-		}
-		for (int i_dir = 0; i_dir < 4; i_dir++)
-		{
-			auto op_dir = opposed_direction(dirs[i_dir]);
-			auto sum = half_sequence(start + i, player, dirs[i_dir], space, blocked, cells[start + i] == player + 1);
-			sum += half_sequence(start + i, player, op_dir, space, blocked, 0);
-			if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
-				capture_count += 1;
-			blocked = 0;
-			space = false;
-		}
-		i += tmp_dir;
-	}
-	return (capture[1 - player] + capture_count >= 5) ? true : false;
-}
-
-void		Board::check_capture(int index, uint8_t player)
-{
-	bool	space = false;
-	uint8_t	blocked = 0;
-	uint8_t	sum = 0;
-
-	for (int i = 0; i < 8; i++)
-	{
-		sum = half_sequence(index, player, dirs[i], space, blocked, 0);
-		if (sum_to_sequence(sum, space, blocked) == BlockedTwo)
-		{
-			remove(index + dirs[i], player);
-			remove(index + dirs[i] + dirs[i], player);
-			capture[1 - player] += 1;
-		}
-		blocked = 0;
-		space = false;
-	}
-}
-
 void		Board::generate_indexes(board_t &new_board)
 {
 	if (indexes[0].size() > 0 || indexes[1].size() > 0)
@@ -144,6 +73,12 @@ void		Board::generate_indexes(board_t &new_board)
 		if (new_board[i] > 0)
 			indexes[new_board[i] - 1].push_back(i);
 	}
+}
+
+void		Board::update(board_t new_board)
+{
+	cells = new_board;
+	generate_indexes(new_board);
 }
 
 bool		Board::within_limits(int start, int index, int direction)
@@ -186,40 +121,7 @@ int			Board::opposed_direction(int direction)
 	return direction;
 }
 
-uint8_t		Board::half_sequence(int start, uint8_t player, int direction, bool &space, uint8_t &blocked, uint8_t sum)
-{
-	int		i = direction;
-
-	while (within_limits(start, start + i, direction))
-	{
-		if (cells[start + i] == Empty)
-		{
-			if (space == false &&
-				within_limits(start, start + i + direction, direction) &&
-				cells[start + i + direction] == player + 1)
-			{
-				space = true;
-			}
-			else
-				return sum;
-		}
-		else if (cells[start + i] != player + 1)
-		{
-			blocked += 1;
-			return sum;
-		}
-		else
-		{
-			if (sum == 4 && space == true)
-				return sum;
-			sum += 1;
-		}
-		i += direction;
-	}
-	return sum;
-}
-
-Sequence	Board::sum_to_sequence(uint8_t sum, bool space, uint8_t blocked)
+SeqType	Board::sum_to_sequence(uint8_t sum, bool space, uint8_t blocked)
 {
 	if (sum < 2 || blocked > 1)
 		return None;
@@ -236,27 +138,144 @@ Sequence	Board::sum_to_sequence(uint8_t sum, bool space, uint8_t blocked)
 	return None;
 }
 
-Sequence	Board::stone_sequence(int start, uint8_t player, int direction)
+bool		Board::is_draw()
 {
-	uint8_t	sum = 0;
+	int total = 0;
+	total = indexes[0].size();
+	total += indexes[1].size();
+	return (total == BOARD_CAPACITY) ? true : false;
+}
+
+bool		Board::is_double_freethree(int index, uint8_t player)
+{
+	uint8_t	count = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		auto sequence = get_sequence(index, player, dirs[i]);
+		count += (sequence.type == FreeTwo);
+		if (count >= 2)
+			return true;
+	}
+	return false;
+}
+
+bool		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
+{
+	int		offset = 0;
+	int		current_dir = direction;
+	uint8_t	capture_count = 0;
+
+	for (int _loop = 0; _loop < 2; _loop++)
+	{
+		while (within_limits(start, start + offset, current_dir) && cells[start + offset] == player + 1)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				auto sequence = get_sequence(start + offset, player, dirs[i]);
+				if (sequence.type == BlockedTwo)
+					capture_count += 1;
+			}
+			offset += current_dir;
+		}
+		current_dir = opposed_direction(direction);
+		offset = current_dir;
+	}
+	return (capture[1 - player] + capture_count >= 5) ? true : false;
+}
+
+Sequence	Board::get_sequence(int start, uint8_t player, int direction)
+{
+	Sequence	sequence;
+	int			offset = 0;
+	uint8_t		blocked = 0;
+	bool		space = false;
+
+	sequence.direction = direction;
+	for (int _loop = 0; _loop < 2; _loop++)
+	{
+		while (within_limits(start, start + offset, direction))
+		{
+			if (cells[start + offset] == Empty)
+			{
+				// If next one is a player stone
+				if (space == false &&
+					within_limits(start, start + offset + direction, direction) &&
+					cells[start + offset + direction] == player + 1)
+				{
+					if (offset != 0)
+						space = true;
+				}
+				else
+					break;
+			}
+			else if (cells[start + offset] != player + 1)
+			{
+				blocked += 1;
+				break;
+			}
+			else
+			{
+				if (sequence.stone.size() == 4 && space == true)
+					break;
+				sequence.stone.push_back(start + offset);
+			}
+			offset += direction;
+		}
+		direction = opposed_direction(direction);
+		offset = direction;
+	}
+	sequence.type = sum_to_sequence(sequence.stone.size(), space, blocked);
+	return sequence;
+}
+
+Sequence	Board::get_best_sequence(int start, uint8_t player, int direction)
+{
+	auto first_sequence = get_sequence(start, player, direction);
+	auto second_sequence = get_sequence(start, player, opposed_direction(direction));
+	if (first_sequence.type > second_sequence.type)
+		return first_sequence;
+	return second_sequence;
+}
+
+void		Board::capture_if_possible(int index, uint8_t player)
+{
 	bool	space = false;
 	uint8_t	blocked = 0;
 
-	if (cells[start] == Empty)
-		space = true;
-	else if (cells[start] != player + 1)
-		return None;
-	else
-		sum += 1;
-	
-	sum = half_sequence(start, player, direction, space, blocked, sum);
-	sum = half_sequence(start, player, opposed_direction(direction), space, blocked, sum);
-	return sum_to_sequence(sum, space, blocked);
+	for (int i = 0; i < 4; i++)
+	{
+		auto sequence = get_sequence(index, player, dirs[i]);
+		if (sequence.type == BlockedTwo)
+		{
+			auto dir = (within_limits(index, index + dirs[i], dirs[i]) && cells[index + dirs[i]] == player + 1)
+				? dirs[i] : opposed_direction(dirs[i]);
+			remove(index + dir, player);
+			remove(index + dir + dir, player);
+			capture[1 - player] += 1;
+		}
+		blocked = 0;
+		space = false;
+	}
 }
 
-Sequence	Board::get_stone_sequence(int start, uint8_t player, int direction)
-{
-	auto first_sequence = stone_sequence(start, player, direction);
-	auto second_sequence = stone_sequence(start, player, opposed_direction(direction));
-	return std::max(first_sequence, second_sequence);
-}
+// vector<SeqType>	Board::get_all_stone_sequence(int start, uint8_t player)
+// {
+// 	vector<SeqType>	seq_list;
+// 	board_t				visited;
+
+
+// }
+
+// int				Board::evaluate()
+// {
+
+// }
+
+// vector<Board>	Board::generate_sorted_children()
+// {
+// 	vector<Board>	children;
+
+	
+// 	return children;
+// }
