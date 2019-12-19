@@ -1,6 +1,7 @@
 #pragma once
 
 #include "macros.h"
+#include "Parameters.h"
 
 enum SeqType
 {
@@ -33,16 +34,10 @@ typedef std::array<std::vector<uint16_t>, 2>	indexes_t;
 
 class Board
 {
-	private:
-
-		indexes_t	indexes;
-
-		bool		within_limits(int start, int index, int direction);
-		int			opposed_direction(int direction);
-		SeqType		sum_to_sequence(uint8_t sum, bool space, uint8_t blocked);
 
 	public:
 
+		indexes_t	indexes;
 		board_t					cells;
 		std::array<uint8_t, 2>	capture;
 
@@ -65,6 +60,11 @@ class Board
 		Sequence			get_sequence(int start, uint8_t player, int direction);
 		Sequence			get_best_sequence(int start, uint8_t player, int direction);
 		bool				can_capture(int start, uint8_t player, int direction);
+		bool				within_limits(int start, int index, int direction);
+		int					opposed_direction(int direction);
+		SeqType				sum_to_sequence(uint8_t sum, bool space, uint8_t blocked);
+		void				play_move(size_t index, uint8_t player, Rule rule);
+		bool				can_place(size_t index, uint8_t player, Rule rule);
 
 		// int					evaluate();
 		// std::vector<Board>	generate_sorted_children();

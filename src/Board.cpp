@@ -263,23 +263,32 @@ void		Board::capture_if_possible(int index, uint8_t player)
 	}
 }
 
-// vector<SeqType>	Board::get_all_stone_sequence(int start, uint8_t player)
+void		Board::play_move(size_t index, uint8_t player, Rule rule)
+{
+	if (rule == Restricted)
+		capture_if_possible(index, 1 - player);
+	add(index, player);
+}
+
+bool		Board::can_place(size_t index, uint8_t player, Rule rule)
+{
+	if (cells[index] != Empty)
+		return false;
+	if (rule == Restricted && is_double_freethree(index, player))
+		return false;
+	return true;
+}
+
+// int				Board::evaluate(uint8_t move_value[9], board_t cell_value)
 // {
-// 	vector<SeqType>	seq_list;
-// 	board_t				visited;
+// 	int		score = 0;
+// 	board_t	visited;
 
-
-// }
-
-// int				Board::evaluate()
-// {
-
-// }
-
-// vector<Board>	Board::generate_sorted_children()
-// {
-// 	vector<Board>	children;
-
-	
-// 	return children;
+// 	for (auto &player_stones : indexes)
+// 	{
+// 		for (auto &stone : player_stones)
+// 		{
+// 			score += posi
+// 		}
+// 	}
 // }

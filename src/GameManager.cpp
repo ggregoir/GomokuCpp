@@ -16,6 +16,28 @@ GameManager::GameManager(Parameters params)
 		player_mode = Human;
 	else
 		player_mode = Engine;
+
+	move_value[ BlockedTwo ] = (params.rule == Restricted) ? -300 : 50;
+	move_value[ None ] = 0;
+	move_value[ FreeTwo ] = 100;
+	move_value[ BlockedThree ] = 200;
+	move_value[ BlockedFour ] = 500;
+	move_value[ FreeThree ] = 750;
+	move_value[ FreeFour ] = 1500;
+	move_value[ Five ] = 1500;
+	move_value[ /* Capture */ 8 ] = 300;
+
+	for (int y = 0; y <= BOARD_SIZE / 2; y++)
+	{
+		for (int x = 0; x <= BOARD_SIZE / 2; x++)
+		{
+			auto pos_value = std::min(x, y);
+			cell_value[y * BOARD_SIZE + x] = pos_value;
+			cell_value[y * BOARD_SIZE + (BOARD_SIZE - 1 - x)] = pos_value;
+			cell_value[(BOARD_SIZE - 1 - y) * BOARD_SIZE + (BOARD_SIZE - 1 - x)] = pos_value;
+			cell_value[(BOARD_SIZE - 1 - y) * BOARD_SIZE + x] = pos_value;
+		}
+	}
 }
 
 GameManager::~GameManager() {}
@@ -34,34 +56,9 @@ void		GameManager::change_player_turn()
 		player_mode = 1 - player_mode;
 }
 
-bool		GameManager::can_place(size_t index, uint8_t player, Parameters params)
-{
-	if (params.rule == Restricted && board.get(index) == Empty)
-	{
-		if (board.is_double_freethree(index, player))
-			return false;
-	}
-	return board.get(index) == Empty;
-
-}
-
-void		GameManager::play_move(size_t index, uint8_t player)
-{
-	if (params.rule == Restricted)
-		board.capture_if_possible(index, 1 - player);
-	board.add(index, player);
-	
-	add_in_history(board.cells, index, board.capture);
-}
-
-void		GameManager::add_in_history(board_t board, int last_move, array<uint8_t, 2> capture)
-{
-	history.push_back(History { board, last_move, capture });
-}
-
 int			GameManager::get_last_move()
 {
-	return history.size() ? history.back().last_move : -1;
+	return history.size() ? (int)history.back().last_move : -1;
 }
 
 size_t		GameManager::dumb_algo(board_t grid)
@@ -161,9 +158,10 @@ void		GameManager::run_loop()
 				if (LEFT_CLICK(event))
 				{
 					stone = ui.get_user_input(Position(event.button.x, event.button.y));
-					if (can_place(stone.index(), player, params))
+					if (board.can_place(stone.index(), player, params.rule))
 					{
-						play_move(stone.index(), player);
+						board.play_move(stone.index(), player, params.rule);
+						history.push_back(History { board.cells, stone.index(), board.capture });
 						printf("Player %d (human) played at position (%d, %d)\n", player + 1, stone.x, stone.y);
 						end_turn = true;
 					}
@@ -181,9 +179,10 @@ void		GameManager::run_loop()
 				stone = INDEX_TO_POS(dumb_algo(board.cells));
 				auto end = chrono::system_clock::now();
 				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
-				if (can_place(stone.index(), player, params))
+				if (board.can_place(stone.index(), player, params.rule))
 				{
-					play_move(stone.index(), player);
+					board.play_move(stone.index(), player, params.rule);
+					history.push_back(History { board.cells, stone.index(), board.capture });
 					printf("Player %d (engine) played at position (%d, %d) in %lld ms\n",
 						player + 1, stone.x, stone.y, duration.count());
 					end_turn = true;

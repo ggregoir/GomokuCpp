@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Board.h"
-#include "Parameters.h"
 
 enum PlayerMode
 {
@@ -22,7 +21,7 @@ enum GameStatus
 struct History
 {
 	board_t						board;
-	int							last_move;
+	size_t						last_move;
 	std::array<uint8_t, 2>		capture;
 };
 
@@ -41,13 +40,12 @@ class GameManager
 		std::vector<History>	history;
 		bool					player;
 		uint8_t					player_mode;
+		uint8_t					move_value[9];
+		uint8_t					cell_value[BOARD_CAPACITY];
 
 		void					run_loop();
-		bool					can_place(size_t index, uint8_t player, Parameters params);
 		void					change_player_turn();
 		size_t					get_connect4_index(size_t index);
-		void					play_move(size_t index, uint8_t player);
-		void					add_in_history(board_t cells, int last_move, std::array<uint8_t, 2> capture);
 		int						get_last_move();
 		void					load_history();
 		GameStatus				is_endgame(int index, uint8_t player);
