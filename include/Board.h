@@ -3,23 +3,11 @@
 #include "macros.h"
 #include "Parameters.h"
 
-enum SeqType
-{
-	None,
-	BlockedTwo,
-	FreeTwo,
-	BlockedThree,
-	BlockedFour,
-	FreeThree,
-	FreeFour,
-	Five
-};
-
 struct Sequence
 {
 	std::vector<uint16_t>	stone;
-	SeqType					type;
-	int						direction;
+	size_t					len;
+	uint8_t					blocked;
 };
 
 enum Direction
@@ -32,42 +20,38 @@ enum Direction
 
 typedef std::array<std::vector<uint16_t>, 2>	indexes_t;
 
+static int 	dirs[8] = {Left, Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left};
+
 class Board
 {
 
 	public:
 
-		indexes_t	indexes;
+		indexes_t				indexes;
 		board_t					cells;
 		std::array<uint8_t, 2>	capture;
 
 		Board();
 		~Board();
 
-		Board				clone();
-		void				add(size_t index, uint8_t player);
-		uint8_t				get(size_t index);
-		bool				is_double_freethree(int index, uint8_t player);
-		void				remove(size_t index, uint8_t player);
-		void				update(board_t new_board);
-		bool				is_draw();
-		void				clear_cells();
-		void				clear_indexes();
-		board_t				get_board();
-		void				generate_indexes(board_t &new_board);
-		void				capture_if_possible(int index, uint8_t player);
-		bool				can_capture_win_sequence(int start, uint8_t player, int direction);
-		Sequence			get_sequence(int start, uint8_t player, int direction);
-		Sequence			get_best_sequence(int start, uint8_t player, int direction);
-		bool				can_capture(int start, uint8_t player, int direction);
-		bool				within_limits(int start, int index, int direction);
-		int					opposed_direction(int direction);
-		SeqType				sum_to_sequence(uint8_t sum, bool space, uint8_t blocked);
-		void				play_move(size_t index, uint8_t player, Rule rule);
-		bool				can_place(size_t index, uint8_t player, Rule rule);
-
-		// int					evaluate();
-		// std::vector<Board>	generate_sorted_children();
-		// std::vector<SeqType>	get_all_stone_sequence(int start, uint8_t player);
+		Board					clone();
+		void					add(size_t index, uint8_t player);
+		uint8_t					get(size_t index);
+		bool					is_double_freethree(int index, uint8_t player);
+		void					remove(size_t index, uint8_t player);
+		void					update(board_t new_board);
+		bool					is_draw();
+		void					clear_cells();
+		void					clear_indexes();
+		board_t					get_board();
+		void					generate_indexes(board_t &new_board);
+		void					capture_if_possible(int index, uint8_t player);
+		bool					can_capture_win_sequence(int start, uint8_t player, int direction);
+		Sequence				get_sequence(int start, uint8_t player, int direction, bool check_capture = false);
+		Sequence				get_best_sequence(int start, uint8_t player, int direction);
+		bool					within_limits(int start, int index, int direction);
+		int						opposed_direction(int direction);
+		void					play_move(size_t index, uint8_t player, Rule rule);
+		bool					can_place(size_t index, uint8_t player, Rule rule);
 
 };

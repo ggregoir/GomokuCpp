@@ -4,7 +4,7 @@
 
 enum PlayerMode
 {
-	Engine,
+	AI,
 	Human
 };
 
@@ -40,8 +40,6 @@ class GameManager
 		std::vector<History>	history;
 		bool					player;
 		uint8_t					player_mode;
-		uint8_t					move_value[9];
-		uint8_t					cell_value[BOARD_CAPACITY];
 
 		void					run_loop();
 		void					change_player_turn();

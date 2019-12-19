@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "Position.h"
 #include "UserInterface.h"
+#include "Engine.h"
 
 #include <SDL.h>
 #include <stdio.h>
@@ -15,29 +16,7 @@ GameManager::GameManager(Parameters params)
 	if (params.priority == true && params.mode != EngineVsEngine)
 		player_mode = Human;
 	else
-		player_mode = Engine;
-
-	move_value[ BlockedTwo ] = (params.rule == Restricted) ? -300 : 50;
-	move_value[ None ] = 0;
-	move_value[ FreeTwo ] = 100;
-	move_value[ BlockedThree ] = 200;
-	move_value[ BlockedFour ] = 500;
-	move_value[ FreeThree ] = 750;
-	move_value[ FreeFour ] = 1500;
-	move_value[ Five ] = 1500;
-	move_value[ /* Capture */ 8 ] = 300;
-
-	for (int y = 0; y <= BOARD_SIZE / 2; y++)
-	{
-		for (int x = 0; x <= BOARD_SIZE / 2; x++)
-		{
-			auto pos_value = std::min(x, y);
-			cell_value[y * BOARD_SIZE + x] = pos_value;
-			cell_value[y * BOARD_SIZE + (BOARD_SIZE - 1 - x)] = pos_value;
-			cell_value[(BOARD_SIZE - 1 - y) * BOARD_SIZE + (BOARD_SIZE - 1 - x)] = pos_value;
-			cell_value[(BOARD_SIZE - 1 - y) * BOARD_SIZE + x] = pos_value;
-		}
-	}
+		player_mode = AI;
 }
 
 GameManager::~GameManager() {}
@@ -53,7 +32,7 @@ void		GameManager::change_player_turn()
 {
 	player = !player;
 	if (params.mode != PlayerVsPlayer && params.mode != EngineVsEngine)
-		player_mode = 1 - player_mode;
+		player_mode = player_mode ^ 1;
 }
 
 int			GameManager::get_last_move()
@@ -81,6 +60,7 @@ void		GameManager::load_history()
 	{
 		board.clear_cells();
 		board.clear_indexes();
+		player = false;
 	}
 	else
 	{
@@ -103,7 +83,7 @@ GameStatus		GameManager::is_endgame(int index, uint8_t player)
 	for (int i = 0; i < 4; i++)
 	{
 		auto sequence = board.get_sequence(index, player, dirs_win[i]);
-		if (sequence.type == Five)
+		if (sequence.len == 5)
 		{
 			if (params.rule == Restricted)
 			{
@@ -136,10 +116,11 @@ void		GameManager::run_loop()
 {
 	UserInterface	ui(params);
 	SDL_Event		event;
-	bool			quit = false;
-	GameStatus 		game_status = Playing;
-	bool			end_turn = false;
 	Position		stone;
+	Engine			engine(params.rule);
+	GameStatus 		game_status = Playing;
+	bool			quit = false;
+	bool			end_turn = false;
 
 	ui.render();
 	while (!quit)
@@ -163,6 +144,7 @@ void		GameManager::run_loop()
 						board.play_move(stone.index(), player, params.rule);
 						history.push_back(History { board.cells, stone.index(), board.capture });
 						printf("Player %d (human) played at position (%d, %d)\n", player + 1, stone.x, stone.y);
+						printf("evaluation of board: %d\n", engine.evaluate_board(board, player));
 						end_turn = true;
 					}
 					else
