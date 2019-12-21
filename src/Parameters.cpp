@@ -4,7 +4,7 @@
 
 Parameters::Parameters()
 {
-	this->mode = PlayerVsPlayer;
+	this->mode = PlayerVsEngine;
 	this->rule = Restricted;
 	this->theme = Classic;
 	this->priority = true;
