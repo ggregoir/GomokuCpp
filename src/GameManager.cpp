@@ -145,6 +145,7 @@ void		GameManager::run_loop()
 						history.push_back(History { board.cells, stone.index(), board.capture });
 						printf("Player %d (human) played at position (%d, %d)\n", player + 1, stone.x, stone.y);
 						printf("evaluation of board: %d\n", engine.evaluate_board(board, player));
+						engine.generate_sorted_children(board, player);
 						end_turn = true;
 					}
 					else
@@ -158,7 +159,7 @@ void		GameManager::run_loop()
 				SDL_PollEvent(&event);
 				auto start = chrono::system_clock::now();
 				// Run negamax here
-				stone = INDEX_TO_POS(dumb_algo(board.cells));
+				stone = INDEX_TO_POS(engine.get_best_move(board, player));
 				auto end = chrono::system_clock::now();
 				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
 				if (board.can_place(stone.index(), player, params.rule))

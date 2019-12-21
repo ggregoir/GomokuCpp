@@ -53,5 +53,7 @@ class Board
 		int						opposed_direction(int direction);
 		void					play_move(size_t index, uint8_t player, Rule rule);
 		bool					can_place(size_t index, uint8_t player, Rule rule);
+		void					get_neighbors(int index, std::vector<uint16_t> &neighbors, board_t &checked);
+		void					add_neighbor(int origin, int neighbor, int direction, std::vector<uint16_t> &neighbors, board_t &checked);
 
 };

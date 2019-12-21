@@ -256,3 +256,45 @@ bool		Board::can_place(size_t index, uint8_t player, Rule rule)
 		return false;
 	return true;
 }
+
+void		Board::add_neighbor(int origin, int neighbor, int direction, vector<uint16_t> &neighbors, board_t &checked)
+{
+	if (checked[neighbor] == Empty && cells[neighbor] == Empty && within_limits(origin, neighbor, direction))
+	{
+		neighbors.push_back((uint16_t)neighbor);
+		checked[neighbor] = 1;
+	}
+}
+
+void		Board::get_neighbors(int index, vector<uint16_t> &neighbors, board_t &checked)
+{
+	// 1st row
+	add_neighbor(index, index + (Up + Left) * 2, Up + Left, neighbors, checked);
+	add_neighbor(index, index + Up * 2 + Left, Up + Left, neighbors, checked);
+	add_neighbor(index, index + Up * 2, Up, neighbors, checked);
+	add_neighbor(index, index + Up * 2 + Right, Up + Right, neighbors, checked);
+	add_neighbor(index, index + (Up + Right) * 2, Up + Right, neighbors, checked);
+	// 2nd row
+	add_neighbor(index, index + Left * 2 + Up, Up + Left, neighbors, checked);
+	add_neighbor(index, index + Up + Left, Up + Left, neighbors, checked);
+	add_neighbor(index, index + Up, Up, neighbors, checked);
+	add_neighbor(index, index + Up + Right, Up + Right, neighbors, checked);
+	add_neighbor(index, index + Right * 2 + Up, Up + Right, neighbors, checked);
+	// 3rd row
+	add_neighbor(index, index + Left * 2, Left, neighbors, checked);
+	add_neighbor(index, index + Left, Left, neighbors, checked);
+	add_neighbor(index, index + Right, Right, neighbors, checked);
+	add_neighbor(index, index + Right * 2, Right, neighbors, checked);
+	// 4th row
+	add_neighbor(index, index + Left * 2 + Down, Down + Left, neighbors, checked);
+	add_neighbor(index, index + Down + Left, Down + Left, neighbors, checked);
+	add_neighbor(index, index + Down, Down, neighbors, checked);
+	add_neighbor(index, index + Down + Right, Down + Right, neighbors, checked);
+	add_neighbor(index, index + Right * 2 + Down, Down + Right, neighbors, checked);
+	// 5th row
+	add_neighbor(index, index + (Down + Left) * 2, Down + Left, neighbors, checked);
+	add_neighbor(index, index + Down * 2 + Left, Down + Left, neighbors, checked);
+	add_neighbor(index, index + Down * 2, Down, neighbors, checked);
+	add_neighbor(index, index + Down * 2 + Right, Down + Right, neighbors, checked);
+	add_neighbor(index, index + (Down + Right) * 2, Down + Right, neighbors, checked);
+}
