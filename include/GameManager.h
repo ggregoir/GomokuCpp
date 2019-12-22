@@ -8,16 +8,6 @@ enum PlayerMode
 	Human
 };
 
-enum GameStatus
-{
-	Playing,
-	PlayerOneWin,
-	PlayerTwoWin,
-	PlayerOneWinByCapture,
-	PlayerTwoWinByCapture,
-	Draw
-};
-
 struct History
 {
 	board_t						board;
@@ -46,9 +36,6 @@ class GameManager
 		size_t					get_connect4_index(size_t index);
 		int						get_last_move();
 		void					load_history();
-		GameStatus				is_endgame(int index, uint8_t player);
-		void					print_game_status(GameStatus status);
+		void					print_game_status(uint8_t status);
 
-		// temporary
-		size_t					dumb_algo(board_t grid);
 };

@@ -8,6 +8,7 @@ Parameters::Parameters()
 	this->rule = Restricted;
 	this->theme = Classic;
 	this->priority = true;
+	this->algo = NegamaxWithPruning;
 }
 
 Parameters::~Parameters() {}
@@ -35,6 +36,11 @@ void	Parameters::set_priority(Parameters &params, uint8_t priority)
 	params.priority = (bool)priority;
 }
 
+void	Parameters::set_algorithm(Parameters &params, uint8_t algo)
+{
+	params.algo = static_cast<Algorithm>(algo);
+}
+
 
 // Getters
 
@@ -56,4 +62,9 @@ uint8_t	Parameters::get_mode(Parameters &params)
 uint8_t	Parameters::get_priority(Parameters &params)
 {
 	return params.priority;
+}
+
+uint8_t	Parameters::get_algorithm(Parameters &params)
+{
+	return params.algo;
 }

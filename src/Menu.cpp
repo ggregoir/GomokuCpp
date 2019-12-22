@@ -16,23 +16,29 @@ namespace color
 
 Menu::Menu(void) : tree
 {
-	{ "Welcome to gomoku !", {1, 5, -1, -1}, 2, 0, nullptr, nullptr },
-		{ "Play", {2, 3, 4, -1}, 3, 0, nullptr, nullptr },
-			{ "Player Vs Player", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
-			{ "Player Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
-			{ "Engine Vs Engine", {-1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
-		{ "Parameters", {6, 10, 14, -1}, 3, 0, nullptr, nullptr },
-			{ "Theme", {7, 8, 9, -1}, 3, 5, nullptr, nullptr },
-				{ "Classic", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
-				{ "Space", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
-				{ "Dark", {-1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
-			{ "Rule", {11, 12, 13, -1}, 3, 5, nullptr, nullptr },
-				{ "Standard", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
-				{ "Restricted", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
-				{ "Connect4", {-1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
-			{ "First to play", {15, 16, -1, -1}, 2, 5, nullptr, nullptr },
-				{ "Player 2 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
-				{ "Player 1 plays first", {-1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
+	{ "Welcome to gomoku !", {1, 5, -1, -1, -1}, 2, 0, nullptr, nullptr },
+		{ "Play", {2, 3, 4, -1, -1}, 3, 0, nullptr, nullptr },
+			{ "Player Vs Player", {-1, -1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
+			{ "Player Vs Engine", {-1, -1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
+			{ "Engine Vs Engine", {-1, -1, -1, -1, -1}, 0, 1, Parameters::set_mode, Parameters::get_mode },
+		{ "Parameters", {6, 10, 14, 17, -1}, 4, 0, nullptr, nullptr },
+			{ "Theme", {7, 8, 9, -1, -1}, 3, 5, nullptr, nullptr },
+				{ "Classic", {-1, -1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
+				{ "Space", {-1, -1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
+				{ "Dark", {-1, -1, -1, -1, -1}, 0, 6, Parameters::set_theme, Parameters::get_theme },
+			{ "Rule", {11, 12, 13, -1, -1}, 3, 5, nullptr, nullptr },
+				{ "Standard", {-1, -1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
+				{ "Restricted", {-1, -1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
+				{ "Connect4", {-1, -1, -1, -1, -1}, 0, 10, Parameters::set_rule, Parameters::get_rule },
+			{ "First to play", {15, 16, -1, -1, -1}, 2, 5, nullptr, nullptr },
+				{ "Player 2 plays first", {-1, -1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
+				{ "Player 1 plays first", {-1, -1, -1, -1, -1}, 0, 14, Parameters::set_priority, Parameters::get_priority },
+			{ "Algorithm", {18, 19, 20, 21, 22}, 5, 5, nullptr, nullptr},
+				{ "Minimax", {-1, -1, -1, -1, -1}, 0, 17, Parameters::set_algorithm, Parameters::get_algorithm },
+				{ "Minimax with alpha beta pruning", {-1, -1, -1, -1, -1}, 0, 17, Parameters::set_algorithm, Parameters::get_algorithm },
+				{ "Negamax", {-1, -1, -1, -1, -1}, 0, 17, Parameters::set_algorithm, Parameters::get_algorithm },
+				{ "Negamax with alpha beta pruning", {-1, -1, -1, -1, -1}, 0, 17, Parameters::set_algorithm, Parameters::get_algorithm },
+				{ "Principal variation search", {-1, -1, -1, -1, -1}, 0, 17, Parameters::set_algorithm, Parameters::get_algorithm },
 
 } {}
 
@@ -83,7 +89,7 @@ void	Menu::displayMenu(int index, Parameters &params)
 	int	choice_index;
 	int	i = 0;
 
-	if (index >= 15 || index < 0)
+	if (index >= 23 || index < 0)
 	{
 		cout << "index error in displayMenu" << endl;
 		exit(EXIT_FAILURE);

@@ -18,6 +18,14 @@ enum Direction
 	Down = 19
 };
 
+enum GameStatus
+{
+	Playing = 0,
+	SequenceWin = 1,
+	CaptureWin = 3,
+	Draw = 5
+};
+
 typedef std::array<std::vector<uint16_t>, 2>	indexes_t;
 
 static int 	dirs[8] = {Left, Up + Left, Up, Up + Right, Right, Right + Down, Down, Down + Left};
@@ -46,7 +54,7 @@ class Board
 		board_t					get_board();
 		void					generate_indexes(board_t &new_board);
 		void					capture_if_possible(int index, uint8_t player);
-		bool					can_capture_win_sequence(int start, uint8_t player, int direction);
+		bool					can_capture_win_sequence(Sequence &sequence, uint8_t player, int direction);
 		Sequence				get_sequence(int start, uint8_t player, int direction, bool check_capture = false);
 		Sequence				get_best_sequence(int start, uint8_t player, int direction);
 		bool					within_limits(int start, int index, int direction);
@@ -55,5 +63,6 @@ class Board
 		bool					can_place(size_t index, uint8_t player, Rule rule);
 		void					get_neighbors(int index, std::vector<uint16_t> &neighbors, board_t &checked);
 		void					add_neighbor(int origin, int neighbor, int direction, std::vector<uint16_t> &neighbors, board_t &checked);
+		uint8_t					is_endgame(int index, uint8_t player, bool restricted_mode);
 
 };

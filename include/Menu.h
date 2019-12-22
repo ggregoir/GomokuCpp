@@ -11,7 +11,7 @@ class Menu
 	struct SubMenu
 	{
 		std::string		name;
-		int				choice[4];
+		int				choice[5];
 		int				nb_choices;
 		int				parent;
 		void			(*set)(Parameters &params, uint8_t to_set);
@@ -26,7 +26,7 @@ class Menu
 		void			clear();
 
 	private:
-		const SubMenu	tree[17];
+		const SubMenu	tree[23];
 		
 		int				getInput(int max_index);
 		void			displayMenu(int index, Parameters &params);

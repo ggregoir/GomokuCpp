@@ -128,30 +128,21 @@ bool		Board::is_double_freethree(int index, uint8_t player)
 	return false;
 }
 
-bool		Board::can_capture_win_sequence(int start, uint8_t player, int direction)
+bool		Board::can_capture_win_sequence(Sequence &sequence, uint8_t player, int direction)
 {
-	int		offset = 0;
-	int		current_dir = direction;
-	int		abs_dir = direction * (direction < 0 ? 1 : -1);
 	uint8_t	capture_count = 0;
 
-	for (int _loop = 0; _loop < 2; _loop++)
+	for (auto index : sequence.stone)
 	{
-		while (within_limits(start, start + offset, current_dir) && cells[start + offset] == player + 1)
+		for (int i = 0; i < 4; i++)
 		{
-			for (int i = 0; i < 4; i++)
+			if (direction != dirs[i])
 			{
-				if (dirs[i] != abs_dir)
-				{
-					auto sequence = get_sequence(start + offset, player, dirs[i], true);
-					if (sequence.len == 2 && sequence.blocked == 1)
-						capture_count += 1;
-				}
+				auto sequence = get_sequence(index, player, dirs[i], true);
+				if (sequence.len == 2 && sequence.blocked == 1)
+					capture_count += 1;
 			}
-			offset += current_dir;
 		}
-		current_dir = opposed_direction(direction);
-		offset = current_dir;
 	}
 	return (capture[player ^ 1] + capture_count >= 5) ? true : false;
 }
@@ -239,6 +230,34 @@ void		Board::capture_if_possible(int index, uint8_t player)
 			}
 		}
 	}
+}
+
+uint8_t		Board::is_endgame(int index, uint8_t player, bool restricted_mode)
+{
+	if (restricted_mode)
+	{
+		if (capture[player] >= 5)
+			return CaptureWin + player;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		auto sequence = get_sequence(index, player, dirs[i]);
+		if (sequence.len == 5)
+		{
+			if (restricted_mode)
+			{
+				if (can_capture_win_sequence(sequence, player, dirs[i]))
+					return Playing;
+				else
+					return SequenceWin + player;
+			}
+			else
+				return SequenceWin + player;
+		}
+	}
+	if (is_draw())
+		return Draw;
+	return Playing;
 }
 
 void		Board::play_move(size_t index, uint8_t player, Rule rule)

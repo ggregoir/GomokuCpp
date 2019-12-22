@@ -15,7 +15,7 @@
 #define CLOSE_EVENT(event) ((event.key.keysym.sym == SDLK_ESCAPE && event.type == SDL_KEYDOWN) || event.type == SDL_QUIT)
 
 #define UNDO_EVENT(event) ((event.key.keysym.sym == 8 && event.type == SDL_KEYDOWN))
-#define RATIO 0.4
+#define RATIO 0.5
 
 class Parameters;
 class Board;

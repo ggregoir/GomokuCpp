@@ -40,16 +40,6 @@ int			GameManager::get_last_move()
 	return history.size() ? (int)history.back().last_move : -1;
 }
 
-size_t		GameManager::dumb_algo(board_t grid)
-{
-	for (size_t i = 0; i < BOARD_CAPACITY; i++)
-	{
-		if (grid[i] == 0)
-			return i;
-	}
-	return 0;
-}
-
 void		GameManager::load_history()
 {
 	if (history.size() > 0)
@@ -71,44 +61,14 @@ void		GameManager::load_history()
 	}
 }
 
-GameStatus		GameManager::is_endgame(int index, uint8_t player)
-{
-	static int 	dirs_win[4] = {Up + Left, Up, Up + Right, Right};
-
-	if (params.rule == Restricted)
-	{
-		if (board.capture[player] >= 5)
-			return static_cast<GameStatus>(player + 3);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		auto sequence = board.get_sequence(index, player, dirs_win[i]);
-		if (sequence.len == 5)
-		{
-			if (params.rule == Restricted)
-			{
-				if (board.can_capture_win_sequence(index, player, dirs_win[i]))
-					return Playing;
-				else
-					return static_cast<GameStatus>(player + 1);
-			}
-			else
-				return static_cast<GameStatus>(player + 1);
-		}
-	}
-	if (board.is_draw() == true)
-		return Draw;
-	return Playing;
-}
-
-void		GameManager::print_game_status(GameStatus status)
+void		GameManager::print_game_status(uint8_t status)
 {
 	if (status == Draw)
 		printf("Draw !\n");
-	else if (status < PlayerOneWinByCapture)
-		printf("Player %d won the game by lining up 5 stones !\n", status);
+	else if (status < CaptureWin)
+		printf("Player %d won the game by lining up 5 stones !\n", status - SequenceWin + 1);
 	else
-		printf("Player %d won the game by capturing 10 enemy stones !\n", status - 2);
+		printf("Player %d won the game by capturing 10 enemy stones !\n", status - CaptureWin + 1);
 	
 }
 
@@ -118,7 +78,7 @@ void		GameManager::run_loop()
 	SDL_Event		event;
 	Position		stone;
 	Engine			engine(params.rule);
-	GameStatus 		game_status = Playing;
+	uint8_t 		game_status = Playing;
 	bool			quit = false;
 	bool			end_turn = false;
 
@@ -144,8 +104,7 @@ void		GameManager::run_loop()
 						board.play_move(stone.index(), player, params.rule);
 						history.push_back(History { board.cells, stone.index(), board.capture });
 						printf("Player %d (human) played at position (%d, %d)\n", player + 1, stone.x, stone.y);
-						printf("evaluation of board: %d\n", engine.evaluate_board(board, player));
-						engine.generate_sorted_children(board, player);
+						// printf("evaluation of board: %d\n", engine.evaluate_board(board, player));
 						end_turn = true;
 					}
 					else
@@ -158,14 +117,15 @@ void		GameManager::run_loop()
 			{
 				SDL_PollEvent(&event);
 				auto start = chrono::system_clock::now();
-				// Run negamax here
-				stone = INDEX_TO_POS(engine.get_best_move(board, player));
+				auto index = engine.get_best_move(board, player, NegamaxWithPruning);
+				stone = INDEX_TO_POS(index);
 				auto end = chrono::system_clock::now();
 				auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
-				if (board.can_place(stone.index(), player, params.rule))
+
+				if (board.can_place(index, player, params.rule))
 				{
-					board.play_move(stone.index(), player, params.rule);
-					history.push_back(History { board.cells, stone.index(), board.capture });
+					board.play_move(index, player, params.rule);
+					history.push_back(History { board.cells, index, board.capture });
 					printf("Player %d (engine) played at position (%d, %d) in %lld ms\n",
 						player + 1, stone.x, stone.y, duration.count());
 					end_turn = true;
@@ -178,7 +138,7 @@ void		GameManager::run_loop()
 			
 			if (end_turn == true)
 			{
-				if ((game_status = is_endgame(stone.index(), player)))
+				if ((game_status = board.is_endgame(stone.index(), player, params.rule == Restricted)))
 					print_game_status(game_status);
 				change_player_turn();
 				end_turn = false;
